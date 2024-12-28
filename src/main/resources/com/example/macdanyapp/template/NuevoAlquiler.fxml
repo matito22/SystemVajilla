@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.collections.FXCollections?>
+
+<?import com.jfoenix.controls.JFXTimePicker?>
+<VBox alignment="CENTER" spacing="15.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.macdanyapp.controllers.NuevoAlquilerController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <DatePicker fx:id="txtFechaComienzoPicker" promptText="Fecha de Comienzo"/>
+    <DatePicker fx:id="txtFechaFinalizacionPicker" promptText="Fecha de Finalizacion"/>
+    <Label fx:id="lblErrorFecha" text="Fecha incorrecta" textFill="red" visible="false" />
+    <TextField fx:id="horaComienzoPicker" promptText="Hora de Comienzo"/>
+    <TextField fx:id="horaFinalizacionPicker" promptText="Hora de Finalizacion"/>
+    <Label fx:id="lblErrorHorario" text="Horario incorrecto" textFill="red" visible="false" />
+    <TextField fx:id="txtDiasDeAlquiler" promptText="Días de Alquiler"/>
+    <Label fx:id="lblErrorDiasDeAlquiler" text="Dias de alquiler incorrecto" textFill="red" visible="false" />
+    <TextField fx:id="txtCostoDelivery" promptText="Costo del Delivery"/>
+    <Label fx:id="lblErrorCostoDelivery" text="Costo Delivery incorrecto" textFill="red" visible="false" />
+    <ComboBox fx:id="miComboBoxEstado" editable="true" prefWidth="300">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="ACTIVO"/>
+                <String fx:value="FINALIZADO"/>
+                <String fx:value="PENDIENTE"/>
+            </FXCollections>
+        </items>
+    </ComboBox>
+
+    <!-- Asegúrate de que estos dos elementos estén bien posicionados -->
+    <TextField fx:id="searchFieldClientes" promptText="Buscar Cliente..."/>
+    <ListView fx:id="listViewClientes" prefHeight="200" prefWidth="300" visible="false"/>
+    <TextField fx:id="txtCantidadVajilla" promptText="Cantidad" />
+    <Label fx:id="lblErrorStockInsuficiente" text="Stock Insuficiente" textFill="red" visible="false" />
+    <TextField fx:id="txtPrecioUnitarioVajilla" promptText="Precio Unitario (Opcional)" />
+    <TextField fx:id="searchFieldTipoDeVajilla" promptText="Buscar Tipo de Vajilla..."/>
+    <ListView fx:id="listViewTiposDeVajilla" prefHeight="200" prefWidth="300" visible="false"/>
+    <ListView fx:id="listViewDetalleActualizado" prefHeight="200" prefWidth="300" visible="false"/>
+    <Label fx:id="lblErrorTipoDeVajilla" text="Vajilla inexistente" textFill="red" visible="false" />
+
+    <Button fx:id="buttonCrearAlquiler" text="Crear Alquiler" onAction="#buttonCrearAlquiler"/>
+    <Button fx:id="buttonAgregarDetalleAlquiler" text="Agregar Vajilla" disable="true" onAction="#buttonAgregarDetalleAlquiler"/>
+    <Label fx:id="lblVajillaAgregada" text="Vajilla agregada" textFill="green" visible="false" />
+    <Label fx:id="lblErrorCamposVacios" text="Hay campos vacios" textFill="red" visible="false" />
+
+</VBox>
