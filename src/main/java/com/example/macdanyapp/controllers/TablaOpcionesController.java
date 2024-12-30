@@ -58,6 +58,13 @@ public class TablaOpcionesController {
     }
 
     @FXML
+    private void crearNuevoCliente() throws IOException {
+        cargarVista("/com/example/macdanyapp/template/CrearNuevoCliente.fxml");
+    }
+
+
+
+    @FXML
     private void crearUsuario() throws IOException {
         if(usuario.getTipoDeUsuario()!=TipoDeUsuario.USUARIO){
             cargarVista("/com/example/macdanyapp/template/CrearUsuario.fxml");

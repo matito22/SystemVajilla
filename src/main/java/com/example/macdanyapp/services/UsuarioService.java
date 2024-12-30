@@ -68,7 +68,12 @@ public class UsuarioService {
     }
 
     public boolean validarUsuario(Usuario usuario) throws SQLException {
-        usuarioExistente=usuarioDAO.traerUsuario(usuario.getNombreDeUsuario());
+        if(usuario!=null){
+            usuarioExistente=usuarioDAO.traerUsuario(usuario.getNombreDeUsuario());
+        }else{
+            return false;
+        }
+
 
         if(usuarioExistente==null){
             return false;
