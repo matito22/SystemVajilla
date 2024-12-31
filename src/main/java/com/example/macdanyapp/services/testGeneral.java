@@ -97,7 +97,7 @@ public class testGeneral
         //alquilerService.eliminarAlquiler(1);
 
         //MODIFICAR ALQUILER (NO FUNCIONA, HAY QUE VERIFICAR COMO LE INDICAMOS QUE ALQUILER QUEREMOS MODIFICAR)
-        //alquilerService.modificarAlquiler(LocalDate.of(2024,10,12),LocalDate.of(202,10,13),LocalTime.of(15,0,0),LocalTime.of(16,0,0),2,8,200,Estado.FINALIZADO,multa,clienteService.traerCliente(1));
+        //alquilerService.modificarAlquiler(195f,alquilerService.traerAlquiler(8).getCliente());
 
 
         //INSERTAR DETALLE ALQUILER (Funciona)
@@ -230,6 +230,8 @@ public class testGeneral
 
         //Stock stock=new Stock(1000,vajillaService.traerVajillaPorTipo(3));
         //stockService.inserStock(stock);
+
+
 
     }
 }

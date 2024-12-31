@@ -2,12 +2,19 @@ package com.example.macdanyapp.controllers;
 
 import com.example.macdanyapp.entitys.*;
 import com.example.macdanyapp.services.*;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 
 import java.io.IOException;
@@ -23,6 +30,8 @@ public class NuevoAlquilerController {
     public TextField txtCantidad;
     @FXML
     public TextField txtPrecioUnitario;
+    @FXML
+    public Button buttonDetalleAlquilerFinalizado;
     @FXML
     private DatePicker txtFechaComienzoPicker;
     @FXML
@@ -77,6 +86,7 @@ public class NuevoAlquilerController {
     private Label lblErrorFecha;
 
     private int idGenerado;
+    float totalAlquiler=0;
 
     private List<TipoDeVajilla> tipoDeVajillass= new ArrayList<>();
     TipoDeVajillaService tipoDeVajillassService = new TipoDeVajillaService();
@@ -269,7 +279,6 @@ public class NuevoAlquilerController {
             Float costoDelivery=null;
             //MANEJO DE FECHAS
 
-
            try{
                 fecha = txtFechaComienzoPicker.getValue();
                 fecha2= txtFechaFinalizacionPicker.getValue();
@@ -332,6 +341,7 @@ public class NuevoAlquilerController {
                     listViewTiposDeVajilla.setDisable(false);
                     listViewDetalleActualizado.setDisable(false);
                     searchFieldTipoDeVajilla.setDisable(false);
+                    buttonDetalleAlquilerFinalizado.setDisable(false);
 
                     //SE DEJA DE MOSTRAR LOS CAMPOS DE CREACION DE ALQUILER
                     txtFechaComienzoPicker.setDisable(true);
@@ -353,8 +363,10 @@ public class NuevoAlquilerController {
             return idGenerado;
         }
 
+
+
     @FXML
-    public void buttonAgregarDetalleAlquiler (ActionEvent event) throws IOException, SQLException {
+    public float buttonAgregarDetalleAlquiler () throws IOException, SQLException {
         //UNA VEZ CREADO EL ALQUILER, VAMOS INGRESANDO LA VAJILLA, SE CREAN DETALLES Y SE AGREGAN A LA BASE DE DATOS.
         Integer cantidad = Integer.parseInt(txtCantidadVajilla.getText());
         float precioUnitario;
@@ -364,13 +376,13 @@ public class NuevoAlquilerController {
 
         if(cantidad > stockDisponible.getCantidadDisponible()){
             lblErrorStockInsuficiente.setVisible(true);
-            return;
+            return 0;
         }else{
             Integer stockNuevo= stockDisponible.getCantidadDisponible()-cantidad;
             stockService.modificarStock(stockNuevo,stockDisponible.getIdStock());
         }
         if (txtPrecioUnitarioVajilla.getText().trim().isEmpty()) {
-            precioUnitario = 0F;
+            precioUnitario = vajilla.getPrecioIndividual();
         } else {
             precioUnitario = Float.parseFloat(txtPrecioUnitarioVajilla.getText().trim());
         }
@@ -379,6 +391,9 @@ public class NuevoAlquilerController {
         try {
             detalleAlquilerService.insertarDetalleAlquiler(detalleAlquiler);
             lblVajillaAgregada.setVisible(true);
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(event -> lblVajillaAgregada.setVisible(false));
+            pause.play();
 
         } catch (SQLException e) {
            lblVajillaAgregada.setVisible(false);
@@ -396,6 +411,34 @@ public class NuevoAlquilerController {
 
         // Actualizar el ObservableList
         detallesObservableList.setAll(listaDetalleAlquilerModificada);
+
+        //VAMOS CALCULANDO EL TOTAL PARA AGREGARSELO AL TOTAL ALQUILER
+        totalAlquiler+=precioUnitario*cantidad;
+
+
+        return totalAlquiler;
+    }
+
+    @FXML
+    public void buttonDetalleAlquilerFinalizado(ActionEvent event) throws IOException, SQLException {
+
+        totalAlquiler=totalAlquiler+alquilerService.traerAlquiler(idGenerado).getCostoDelivery();
+        alquilerService.modificarAlquiler(totalAlquiler,idGenerado);
+
+        buttonAgregarDetalleAlquiler.setDisable(true);
+        txtCantidadVajilla.setDisable(true);
+        txtPrecioUnitarioVajilla.setDisable(true);
+        listViewTiposDeVajilla.setDisable(true);
+        listViewDetalleActualizado.setDisable(true);
+        searchFieldTipoDeVajilla.setDisable(true);
+        buttonDetalleAlquilerFinalizado.setDisable(true);
+
+        txtCantidadVajilla.clear();
+        txtPrecioUnitarioVajilla.clear();
+        searchFieldTipoDeVajilla.clear();
+        listViewTiposDeVajilla.setVisible(false);
+        listViewTiposDeVajilla.getSelectionModel().clearSelection();
+
     }
 
 

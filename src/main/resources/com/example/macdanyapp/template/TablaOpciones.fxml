@@ -26,6 +26,7 @@
             <Button text="Alquileres Activos" onAction="#mostrarAlquileresActivos" prefWidth="180"/>
             <Button text="Alquileres Pendientes" onAction="#mostrarAlquileresPendientes" prefWidth="180"/>
             <Button text="Alquileres Finalizados" onAction="#mostrarAlquileresFinalizados" prefWidth="180"/>
+            <Button text="Stock" onAction="#mostrarStockDisponible" prefWidth="180"/>
             <Button text="Crear Usuario" onAction="#crearUsuario" prefWidth="180"/>
             <Label fx:id="laberErrorAdministrador" text="Permiso de Administrador" textFill="red" visible="false" />
             <Button text="Nuevo cliente" onAction="#crearNuevoCliente" prefWidth="180"/>

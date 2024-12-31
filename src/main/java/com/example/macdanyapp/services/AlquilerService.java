@@ -96,11 +96,15 @@ public class AlquilerService {
 
     }
 
-    public void modificarAlquiler(LocalDate nuevaFechaComienzo, LocalDate nuevaFechaFinalizacion,
-                                  LocalTime nuevaHoraComienzo, LocalTime nuevaHoraFinalizacion, int nuevoDiasDeAlquiler,
-                                  float nuevoCostoDelivery, float nuevoTotalAlquiler, Estado nuevoEstado, Multa nuevoMulta,
-                                  Cliente nuevoCliente) throws SQLException {
-        alquilerDAO.modificarAlquiler(nuevaFechaComienzo, nuevaFechaFinalizacion, nuevaHoraComienzo, nuevaHoraFinalizacion, nuevoDiasDeAlquiler, nuevoCostoDelivery, nuevoTotalAlquiler, nuevoEstado, nuevoMulta, nuevoCliente);
+    public void modificarAlquiler(float nuevoTotalAlquiler ,long idAlquiler) throws SQLException {
+
+        try{
+            alquilerDAO.modificarAlquiler(nuevoTotalAlquiler, idAlquiler);
+            System.out.println("Alquiler Modificado");
+        } catch (Exception e) {
+            System.out.println("Alquiler No Modificado");
+        }
+
     }
 
 

@@ -1,15 +1,14 @@
 package com.example.macdanyapp.repositories;
 
 import com.example.macdanyapp.database.DatabaseConnection;
-import com.example.macdanyapp.entitys.Alquiler;
-import com.example.macdanyapp.entitys.Multa;
-import com.example.macdanyapp.entitys.Stock;
-import com.example.macdanyapp.entitys.Vajilla;
+import com.example.macdanyapp.entitys.*;
 import com.example.macdanyapp.services.AlquilerService;
 import com.example.macdanyapp.services.VajillaService;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StockDAO {
 
@@ -72,5 +71,30 @@ public class StockDAO {
             ps.executeUpdate();
 
         }}
+
+    public List<Stock> traerStockDisponible() throws SQLException {
+        String sql = "SELECT * FROM stock ";
+        List<Stock> listaStock = new ArrayList<>();  // Declaramos una variable para almacenar el cliente
+        Stock stock = null;
+
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+                    int idVajilla = rs.getInt("vajilla_id");
+                    stock = new Stock(
+                            rs.getInt("idStock"),
+                            rs.getInt("cantidadDisponible"),
+                            vajillaService.traerVajilla(idVajilla)
+
+                    );
+                    listaStock.add(stock);
+                }
+            }
+        }
+        return listaStock; // Retornamos el objeto cliente
+    }
 
 }

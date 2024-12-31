@@ -210,22 +210,11 @@ public class AlquilerDAO {
         }
     }
 
-    public void modificarAlquiler(LocalDate nuevaFechaComienzo, LocalDate nuevaFechaFinalizacion,
-                                  LocalTime nuevaHoraComienzo, LocalTime nuevaHoraFinalizacion, int nuevoDiasDeAlquiler,
-                                  float nuevoCostoDelivery, float nuevoTotalAlquiler, Estado nuevoEstado, Multa nuevoMulta,
-                                  Cliente nuevoCliente) throws SQLException {
-        String sql = "UPDATE alquiler SET fechaComienzo = ?, fechaFinalizacion = ? ,horaComienzo = ?,horaFinalizacion = ?,diasDeAlquiler=?,costoDelivery=?,totalAlquiler=?,estado=?,multa=? WHERE cliente_id = ?";
+    public void modificarAlquiler(float nuevoTotalAlquiler,long idAlquiler) throws SQLException {
+        String sql = "UPDATE alquiler SET totalAlquiler=?  WHERE idAlquiler = ?";
         try(PreparedStatement ps = connection.prepareStatement(sql)){
-            ps.setDate(1, Date.valueOf(nuevaFechaComienzo));
-            ps.setDate(2, Date.valueOf(nuevaFechaFinalizacion));
-            ps.setTime(3, Time.valueOf(nuevaHoraComienzo));
-            ps.setTime(4,Time.valueOf(nuevaHoraFinalizacion));
-            ps.setInt(5, nuevoDiasDeAlquiler);
-            ps.setFloat(6, nuevoCostoDelivery);
-            ps.setFloat(7, nuevoTotalAlquiler);
-            ps.setString(8, nuevoEstado.toString());
-            ps.setString(9, nuevoMulta.toString());
-            ps.setInt(10, nuevoCliente.getIdCliente());
+            ps.setFloat(1, nuevoTotalAlquiler);
+            ps.setLong(2,idAlquiler);
             ps.executeUpdate();
         }}
 

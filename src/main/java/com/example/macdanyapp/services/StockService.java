@@ -1,10 +1,13 @@
 package com.example.macdanyapp.services;
 
+import com.example.macdanyapp.entitys.Alquiler;
 import com.example.macdanyapp.entitys.Stock;
 import com.example.macdanyapp.entitys.Vajilla;
 import com.example.macdanyapp.repositories.StockDAO;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
 
 
 public class StockService {
@@ -42,6 +45,25 @@ public class StockService {
 
         return stockExistente;
     }
+
+    public List<Stock> traerStockDisponible() throws SQLException {
+        List<Stock> listStock = null;
+        try{
+            listStock= stockDAO.traerStockDisponible();
+            if(listStock!=null){
+                System.out.println("Stock encontrado: " + listStock);
+            }else{
+                System.out.println("Stock no encontrado.");
+            }
+
+
+        } catch (SQLException e) {
+            System.err.println("Error al traer el stock: " + e.getMessage());
+        }
+        return listStock;
+    }
+
+
 
 
 

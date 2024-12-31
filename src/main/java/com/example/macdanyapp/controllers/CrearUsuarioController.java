@@ -3,6 +3,7 @@ package com.example.macdanyapp.controllers;
 import com.example.macdanyapp.entitys.TipoDeUsuario;
 import com.example.macdanyapp.entitys.Usuario;
 import com.example.macdanyapp.services.UsuarioService;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,6 +14,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import javafx.event.ActionEvent;
+import javafx.util.Duration;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.EventObject;
@@ -41,7 +44,7 @@ public class CrearUsuarioController {
 
 
     @FXML
-    public void buttonCrear(ActionEvent event) throws SQLException, IOException {
+    public void buttonCrear() throws SQLException, IOException {
         lblUsuarioEnUso.setVisible(false);
         lblUsuarioCorrecto.setVisible(false);
 
@@ -59,6 +62,9 @@ public class CrearUsuarioController {
             usuarioService.insertUsuario(usuarioDB);
             lblUsuarioCorrecto.setText("Usuario creado");
             lblUsuarioCorrecto.setVisible(true);
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(event -> lblUsuarioCorrecto.setVisible(false));
+            pause.play();
             txtNuevoUsuario.clear();
             txtNuevaPassword.clear();
         }
