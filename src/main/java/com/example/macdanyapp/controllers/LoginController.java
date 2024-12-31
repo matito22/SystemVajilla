@@ -47,11 +47,11 @@ public class LoginController {
                 //pasamos el usuario al otro controlador
                 TablaOpcionesController controller = loader.getController();
                 // Crear una nueva escena
-                Scene scene = new Scene(root,1700,900);
+                Scene scene = new Scene(root,1600,900);
 
                 // Obtener el Stage actual y establecer la nueva escena
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
+                stage.centerOnScreen();
                 lblError.setVisible(false);
                 lblCorrecto.setVisible(false);
 
@@ -66,9 +66,8 @@ public class LoginController {
                 if(usuarioService.validarUsuario(usuarioDB)){
                     //pasamos el usuario al otro controlador
                     controller.setUsuario(usuarioDB);
-
-                    stage.centerOnScreen();
                     stage.setScene(scene);
+                    stage.centerOnScreen();
                     stage.show();
 
                 }else{

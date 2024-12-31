@@ -3,10 +3,12 @@ package com.example.macdanyapp.controllers;
 import com.example.macdanyapp.entitys.Cliente;
 import com.example.macdanyapp.entitys.Usuario;
 import com.example.macdanyapp.services.ClienteService;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
 
 import java.sql.SQLException;
 
@@ -47,6 +49,10 @@ public class CrearNuevoClienteController {
             Cliente cliente=new Cliente(nombre,apellido,telefono,domicilio);
             clienteService.insertCliente(cliente);
             lblCorrecto.setVisible(true);
+            //EL MENSAJE CORRECTO DURA 3 SEGUNDOS
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(event -> lblCorrecto.setVisible(false));
+            pause.play();
         }
         txtNombreCliente.clear();
         txtApellidoCliente.clear();

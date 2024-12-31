@@ -58,6 +58,11 @@ public class TablaOpcionesController {
     }
 
     @FXML
+    private void mostrarStockDisponible() throws IOException {
+        cargarVista("/com/example/macdanyapp/template/Stock.fxml");
+    }
+
+    @FXML
     private void crearNuevoCliente() throws IOException {
         cargarVista("/com/example/macdanyapp/template/CrearNuevoCliente.fxml");
     }

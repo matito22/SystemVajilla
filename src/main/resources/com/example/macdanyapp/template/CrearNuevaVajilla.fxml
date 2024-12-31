@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.macdanyapp.controllers.CrearNuevaVajillaController">
+    <!-- Margen interno del VBox -->
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <TextField fx:id="txtNombreTipoDeVajilla" promptText="Nombre tipo de vajilla"/>
+    <Label fx:id="lblTipoVajillaAceptado" text="Tipo de Vajilla agregado" textFill="green" visible="false" />
+    <!-- Campo de texto para el nombre de usuario -->
+    <TextField fx:id="txtModeloVajilla" promptText="Modelo" />
+
+    <TextField fx:id="txtColorVajilla" promptText="Color" />
+
+    <TextField fx:id="txtTamanioVajilla" promptText="Tamaño" />
+
+    <TextField fx:id="txtPrecioIndividualVajilla" promptText="Precio" />
+
+    <Button text="Crear" onAction="#buttonCrearVajilla"/>
+
+    <!-- Etiqueta para mostrar mensajes -->
+    <Label fx:id="lblError"  text="Campo vacio o erroneo" textFill="red" visible="false" />
+    <Label fx:id="lblCorrecto"  text="Vajilla agregada con exito" textFill="green" visible="false" />
+
+</VBox>

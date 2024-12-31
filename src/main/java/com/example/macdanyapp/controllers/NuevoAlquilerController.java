@@ -2,12 +2,14 @@ package com.example.macdanyapp.controllers;
 
 import com.example.macdanyapp.entitys.*;
 import com.example.macdanyapp.services.*;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 
 import java.io.IOException;
@@ -354,7 +356,7 @@ public class NuevoAlquilerController {
         }
 
     @FXML
-    public void buttonAgregarDetalleAlquiler (ActionEvent event) throws IOException, SQLException {
+    public void buttonAgregarDetalleAlquiler () throws IOException, SQLException {
         //UNA VEZ CREADO EL ALQUILER, VAMOS INGRESANDO LA VAJILLA, SE CREAN DETALLES Y SE AGREGAN A LA BASE DE DATOS.
         Integer cantidad = Integer.parseInt(txtCantidadVajilla.getText());
         float precioUnitario;
@@ -379,6 +381,9 @@ public class NuevoAlquilerController {
         try {
             detalleAlquilerService.insertarDetalleAlquiler(detalleAlquiler);
             lblVajillaAgregada.setVisible(true);
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(event -> lblVajillaAgregada.setVisible(false));
+            pause.play();
 
         } catch (SQLException e) {
            lblVajillaAgregada.setVisible(false);
