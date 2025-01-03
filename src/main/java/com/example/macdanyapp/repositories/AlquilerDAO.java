@@ -200,6 +200,43 @@ public class AlquilerDAO {
     }
 
 
+    public List<Alquiler> traerAlquileresPorFechaYEstado(LocalDate fechaComienzo, LocalDate fechaFinalizacion,Estado estado) throws SQLException {
+        String sql = "SELECT * FROM alquiler WHERE fechaComienzo  BETWEEN ? AND ? AND estado = ?";
+        List<Alquiler> listaAlquileres = new ArrayList<>();  // Declaramos una variable para almacenar el cliente
+        Alquiler alquiler = null;
+
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setDate(1, Date.valueOf(fechaComienzo));
+            ps.setDate(2, Date.valueOf(fechaFinalizacion));
+            ps.setString(3, estado.name());
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+                    System.out.println("ID ALQUILER: "+rs.getInt("idAlquiler"));
+                    int clienteId = rs.getInt("cliente_id");
+                    String estadoStr=rs.getString("estado");
+                    alquiler = new Alquiler(
+                            rs.getInt("idAlquiler"),
+                            rs.getDate("fechaComienzo").toLocalDate(),
+                            rs.getDate("fechaFinalizacion").toLocalDate(),
+                            rs.getTime("horaComienzo").toLocalTime(),
+                            rs.getTime("horaFinalizacion").toLocalTime(),
+                            rs.getInt("diasDeAlquiler"),
+                            rs.getFloat("costoDelivery"),
+                            rs.getFloat("totalAlquiler"),
+                            Estado.valueOf(estadoStr), // Convierte el String a Enum
+                            multaService.traerMulta(clienteId),
+                            clienteService.traerCliente(clienteId) // Traemos el cliente usando el clienteId
+                    );
+                    listaAlquileres.add(alquiler);
+                }
+            }
+        }
+        return listaAlquileres; // Retornamos el objeto cliente
+    }
+
 
 
     public void eliminarAlquiler(long idAlquiler) throws SQLException {
@@ -217,5 +254,14 @@ public class AlquilerDAO {
             ps.setLong(2,idAlquiler);
             ps.executeUpdate();
         }}
+
+    public void modificarEstadoAlquiler(Estado estado, long idAlquiler)throws SQLException{
+        String sql="UPDATE alquiler SET estado=? WHERE idAlquiler=?";
+        try(PreparedStatement ps = connection.prepareStatement(sql)){
+            ps.setString(1, estado.name());
+            ps.setLong(2, idAlquiler);
+            ps.executeUpdate();
+        }
+    }
 
 }

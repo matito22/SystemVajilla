@@ -29,6 +29,8 @@ import java.util.Objects;
 public class NuevoAlquilerController implements UsuarioAwareController {
 
     @FXML
+    public Button buttonVolver;
+    @FXML
     private Usuario usuario;
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
@@ -120,7 +122,8 @@ public class NuevoAlquilerController implements UsuarioAwareController {
         listViewTiposDeVajilla.setDisable(true);
         listViewDetalleActualizado.setDisable(true);
         searchFieldTipoDeVajilla.setDisable(true);
-        buttonDetalleAlquilerFinalizado.setDisable(false);
+        buttonDetalleAlquilerFinalizado.setDisable(true);
+
         //CARGAR Y MANEJAR LISTVIEW CLIENTES
         clientes = clienteService.traerListaClientes();
 
@@ -356,6 +359,7 @@ public class NuevoAlquilerController implements UsuarioAwareController {
 
 
                     //SE DEJA DE MOSTRAR LOS CAMPOS DE CREACION DE ALQUILER
+                    buttonVolver.setDisable(true);
                     txtFechaComienzoPicker.setDisable(true);
                     txtFechaFinalizacionPicker.setDisable(true);
                     horaComienzoPicker.setDisable(true);
@@ -427,7 +431,7 @@ public class NuevoAlquilerController implements UsuarioAwareController {
         //VAMOS CALCULANDO EL TOTAL PARA AGREGARSELO AL TOTAL ALQUILER
         totalAlquiler+=precioUnitario*cantidad;
 
-
+        buttonDetalleAlquilerFinalizado.setDisable(false);
         return totalAlquiler;
     }
 
@@ -459,7 +463,29 @@ public class NuevoAlquilerController implements UsuarioAwareController {
             throw new RuntimeException(e);
         }
 
+        buttonVolver.setDisable(false);
 
+    }
+
+    @FXML
+    public void buttonVolver(ActionEvent event) throws IOException {
+        // Cargar el archivo FXML
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/macdanyapp/template/TablaOpciones.fxml"));
+        Parent root = loader.load();
+
+        // Obtener el controlador de la nueva escena
+        Object controller = loader.getController();
+        if (controller instanceof UsuarioAwareController) {
+            // Pasar el usuario al nuevo controlador
+            ((UsuarioAwareController) controller).setUsuario(usuario);
+        }
+
+        // Cambiar de escena
+        Scene scene = new Scene(root, 600, 400);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.show();
     }
 
 

@@ -14,8 +14,13 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
 
+    <DatePicker fx:id="txtFechaComienzoPicker" promptText="Fecha de Comienzo"/>
+    <DatePicker fx:id="txtFechaFinalizacionPicker" promptText="Fecha de Finalizacion"/>
+    <TextField fx:id="searchFieldAlquiler" promptText="Buscar Alquiler..."/>
     <ListView fx:id="listViewAlquileresActivos" prefHeight="700" prefWidth="300"/>
 
+    <Button text="Actualizar" fx:id="buttonActualizar"  onAction="#actualizarListaAlquileres" prefWidth="180"/>
     <Button text="Volver" fx:id="buttonVolver"  onAction="#buttonVolver" prefWidth="180"/>
-
+    <Button text="Finalizar Alquiler" fx:id="buttonFinalizar"  onAction="#finalizarAlquiler" prefWidth="180"/>
+    <Label fx:id="lblCorrecto"  text="Alquiler finalizado" textFill="green" visible="false" />
 </VBox>

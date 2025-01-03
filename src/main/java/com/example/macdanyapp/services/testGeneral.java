@@ -230,6 +230,10 @@ public class testGeneral
 
         //Stock stock=new Stock(1000,vajillaService.traerVajillaPorTipo(3));
         //stockService.inserStock(stock);
+        LocalDate fecha=LocalDate.of(2024,11,15);
+        LocalDate fecha2=LocalDate.of(2024,11,20);
+
+       //alquilerService.traerAlquileresPorFechaYEstado(fecha,fecha2,Estado.ACTIVO);
 
 
 

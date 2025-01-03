@@ -79,7 +79,11 @@ public class StockController implements UsuarioAwareController {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/macdanyapp/template/CrearNuevaVajilla.fxml"));
         Parent root = loader.load();
-
+        Object controller = loader.getController();
+        if (controller instanceof UsuarioAwareController) {
+            // Pasar el usuario al nuevo controlador
+            ((UsuarioAwareController) controller).setUsuario(usuario);
+        }
         // Crear una nueva escena
         Scene scene = new Scene(root,1600,900);
 

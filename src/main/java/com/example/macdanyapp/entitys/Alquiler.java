@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class Alquiler {
     private Integer idAlquiler;
@@ -19,6 +20,9 @@ public class Alquiler {
     private List<DetalleAlquiler> listaVajillaAlquilada;
     private Multa multa;
     private String etiqueta;
+
+
+
 
     private static final DateTimeFormatter HORA_FORMATO = DateTimeFormatter.ofPattern("HH:mm");
 

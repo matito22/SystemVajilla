@@ -10,18 +10,30 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
 public class AlquileresActivosController implements UsuarioAwareController  {
+
+    @FXML
+    public DatePicker txtFechaComienzoPicker;
+    @FXML
+    public DatePicker txtFechaFinalizacionPicker;
+    @FXML
+    public TextField searchFieldAlquiler;
+    @FXML
+    public Button buttonActualizar;
+    @FXML
+    public Button buttonFinalizar;
+    @FXML
+    public Label lblCorrecto;
 
     @FXML
     private Usuario usuario;
@@ -49,26 +61,34 @@ public class AlquileresActivosController implements UsuarioAwareController  {
 
     public void initialize() throws SQLException {
 
+        lblCorrecto.setVisible(false);
 
-        listaAlquileres = alquilerService.traerAlquilerPorEstado(Estado.ACTIVO);
-        ObservableList<Alquiler> alquileresObservableList = FXCollections.observableArrayList(listaAlquileres);
-        alquileresObservableList.setAll(listaAlquileres);
-        listViewAlquileresActivos.setItems(alquileresObservableList);
-
-
-        // Define cómo se mostrará cada Cliente en el ListView
-        listViewAlquileresActivos.setCellFactory(param -> new ListCell<>() {
-            protected void updateItem(Alquiler alquiler, boolean empty) {
-                super.updateItem(alquiler, empty);
-                if (empty || alquiler == null) {
-                    setText(null);
-                } else {
-                    setText("Alquiler de: "+alquiler.getCliente().getNombre()+" "+alquiler.getCliente().getApellido()+" || Fecha de Comienzo: "+alquiler.getFechaComienzo()+" || Fecha de Finalizacion: "+alquiler.getFechaFinalizacion()
-                    +" || Hora de comienzo: "+alquiler.getHoraComienzo()+" || Hora de finalizacion: "+alquiler.getHoraFinalizacion()); // Muestra el nombre y apellido
-                }
+        // Configurar acciones para DatePicker
+        txtFechaComienzoPicker.valueProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                actualizarListaAlquileres();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         });
 
+        txtFechaFinalizacionPicker.valueProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                actualizarListaAlquileres();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+
+
+
+        listViewAlquileresActivos.setOnMouseClicked(event -> {
+            Alquiler selectedAlquiler = listViewAlquileresActivos.getSelectionModel().getSelectedItem();
+            if (selectedAlquiler != null) {
+                searchFieldAlquiler.setText(selectedAlquiler.toString()); // Muestra el cliente seleccionado en el TextField
+
+            }
+        });
 
     }
     @FXML
@@ -90,6 +110,55 @@ public class AlquileresActivosController implements UsuarioAwareController  {
         stage.setScene(scene);
         stage.centerOnScreen();
         stage.show();
+    }
+
+    @FXML
+    public void finalizarAlquiler(ActionEvent event) throws SQLException {
+        Alquiler alquiler=listViewAlquileresActivos.getSelectionModel().getSelectedItem();
+
+        try{
+            alquilerService.modificarEstadoAlquiler(Estado.FINALIZADO,alquiler.getIdAlquiler());
+            lblCorrecto.setVisible(true);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @FXML
+    public void actualizarListaAlquileres() throws SQLException {
+        // Obtén las fechas seleccionadas
+        LocalDate fechaDesde = txtFechaComienzoPicker.getValue();
+        LocalDate fechaHasta = txtFechaFinalizacionPicker.getValue();
+
+        // Asegúrate de manejar valores nulos en los DatePicker
+        if (fechaDesde == null || fechaHasta == null) {
+            listaAlquileres = alquilerService.traerAlquilerPorEstado(Estado.ACTIVO);
+        } else {
+            listaAlquileres = alquilerService.traerAlquileresPorFechaYEstado(fechaDesde, fechaHasta, Estado.ACTIVO);
+        }
+
+
+        // Crea la lista observable
+        ObservableList<Alquiler> alquileresObservableList = FXCollections.observableArrayList(listaAlquileres);
+        alquileresObservableList.setAll(listaAlquileres);
+        listViewAlquileresActivos.setItems(alquileresObservableList);
+
+        // Define cómo se mostrará cada Cliente en el ListView
+        listViewAlquileresActivos.setCellFactory(param -> new ListCell<>() {
+            protected void updateItem(Alquiler alquiler, boolean empty) {
+                super.updateItem(alquiler, empty);
+                if (empty || alquiler == null) {
+                    setText(null);
+                } else {
+                    setText("Alquiler de: " + alquiler.getCliente().getNombre() + " " + alquiler.getCliente().getApellido()
+                            + " || Fecha de Comienzo: " + alquiler.getFechaComienzo()
+                            + " || Fecha de Finalización: " + alquiler.getFechaFinalizacion()
+                            + " || Hora de comienzo: " + alquiler.getHoraComienzo()
+                            + " || Hora de finalización: " + alquiler.getHoraFinalizacion());
+                }
+            }
+        });
     }
 
 

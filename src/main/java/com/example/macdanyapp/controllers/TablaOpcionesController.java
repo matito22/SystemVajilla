@@ -89,6 +89,12 @@ public class TablaOpcionesController implements UsuarioAwareController {
         }
     }
 
+
+    @FXML
+    private void finalizarAlquiler() throws IOException {
+        cambiarEscena(("/com/example/macdanyapp/template/FinalizarAlquiler.fxml"));
+    }
+
     private void cambiarEscena(String fxmlPath) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
         Parent root = loader.load();
@@ -105,30 +111,6 @@ public class TablaOpcionesController implements UsuarioAwareController {
         stage.centerOnScreen();
         stage.show();
     }
-
-    /*private void cambiarEscenaUsuario() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/macdanyapp/template/CrearUsuario.fxml"));
-        Parent root = loader.load();
-        // Obtener el controlador de la nueva escena
-        CrearUsuarioController controller = loader.getController();
-        // Pasar el usuario al nuevo controlador
-        controller.setUsuario(usuario);
-        Stage stage = (Stage) mostrarNuevoAlquiler.getScene().getWindow();
-        Scene scene = new Scene(root,1600,900);
-        stage.setScene(scene);
-        stage.centerOnScreen();
-        stage.show();
-    }
-
-    private void cambiarEscena(String fxmlPath) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-        Parent root = loader.load();
-        Stage stage = (Stage) mostrarNuevoAlquiler.getScene().getWindow();
-        Scene scene = new Scene(root,1600,900);
-        stage.setScene(scene);
-        stage.centerOnScreen();
-        stage.show();
-    }*/
 
 
 

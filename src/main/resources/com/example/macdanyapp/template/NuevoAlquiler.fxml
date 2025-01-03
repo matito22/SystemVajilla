@@ -51,6 +51,7 @@
     <Button fx:id="buttonCrearAlquiler" text="Crear Alquiler" onAction="#buttonCrearAlquiler"/>
     <Button fx:id="buttonAgregarDetalleAlquiler" text="Agregar Vajilla" disable="true" onAction="#buttonAgregarDetalleAlquiler"/>
     <Button fx:id="buttonDetalleAlquilerFinalizado" text="Finalizar Detalle" disable="true" onAction="#buttonDetalleAlquilerFinalizado"/>
+    <Button text="Volver" fx:id="buttonVolver"  onAction="#buttonVolver" prefWidth="180"/>
     <Label fx:id="lblVajillaAgregada" text="Vajilla agregada" textFill="green" visible="false" />
     <Label fx:id="lblErrorCamposVacios" text="Hay campos vacios" textFill="red" visible="false" />
 
