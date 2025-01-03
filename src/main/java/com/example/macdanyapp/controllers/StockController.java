@@ -88,4 +88,6 @@ public class StockController {
         stage.show();
 
     }
+
+    //FUNCIONA PERFECTO HASTA AHORA
 }
