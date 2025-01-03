@@ -47,7 +47,7 @@ public class LoginController {
                 //pasamos el usuario al otro controlador
                 TablaOpcionesController controller = loader.getController();
                 // Crear una nueva escena
-                Scene scene = new Scene(root,1600,900);
+                Scene scene = new Scene(root,600,400);
 
                 // Obtener el Stage actual y establecer la nueva escena
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

@@ -28,4 +28,6 @@
     <!-- Etiqueta para mostrar mensajes -->
     <Label fx:id="lblUsuarioEnUso"  textFill="red" visible="false" />
     <Label fx:id="lblUsuarioCorrecto" textFill="green" visible="false" />
+
+    <Button text="Volver" fx:id="buttonVolver"  onAction="#buttonVolver" prefWidth="180"/>
 </VBox>

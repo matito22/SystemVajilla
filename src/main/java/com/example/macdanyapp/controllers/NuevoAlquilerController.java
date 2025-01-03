@@ -24,8 +24,19 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class NuevoAlquilerController {
+public class NuevoAlquilerController implements UsuarioAwareController {
+
+    @FXML
+    private Usuario usuario;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
     @FXML
     public TextField txtCantidad;
     @FXML
@@ -109,6 +120,7 @@ public class NuevoAlquilerController {
         listViewTiposDeVajilla.setDisable(true);
         listViewDetalleActualizado.setDisable(true);
         searchFieldTipoDeVajilla.setDisable(true);
+        buttonDetalleAlquilerFinalizado.setDisable(false);
         //CARGAR Y MANEJAR LISTVIEW CLIENTES
         clientes = clienteService.traerListaClientes();
 
@@ -341,7 +353,7 @@ public class NuevoAlquilerController {
                     listViewTiposDeVajilla.setDisable(false);
                     listViewDetalleActualizado.setDisable(false);
                     searchFieldTipoDeVajilla.setDisable(false);
-                    buttonDetalleAlquilerFinalizado.setDisable(false);
+
 
                     //SE DEJA DE MOSTRAR LOS CAMPOS DE CREACION DE ALQUILER
                     txtFechaComienzoPicker.setDisable(true);
@@ -423,21 +435,30 @@ public class NuevoAlquilerController {
     public void buttonDetalleAlquilerFinalizado(ActionEvent event) throws IOException, SQLException {
 
         totalAlquiler=totalAlquiler+alquilerService.traerAlquiler(idGenerado).getCostoDelivery();
-        alquilerService.modificarAlquiler(totalAlquiler,idGenerado);
 
-        buttonAgregarDetalleAlquiler.setDisable(true);
-        txtCantidadVajilla.setDisable(true);
-        txtPrecioUnitarioVajilla.setDisable(true);
-        listViewTiposDeVajilla.setDisable(true);
-        listViewDetalleActualizado.setDisable(true);
-        searchFieldTipoDeVajilla.setDisable(true);
-        buttonDetalleAlquilerFinalizado.setDisable(true);
 
-        txtCantidadVajilla.clear();
-        txtPrecioUnitarioVajilla.clear();
-        searchFieldTipoDeVajilla.clear();
-        listViewTiposDeVajilla.setVisible(false);
-        listViewTiposDeVajilla.getSelectionModel().clearSelection();
+        try{
+            alquilerService.modificarAlquiler(totalAlquiler,idGenerado);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/macdanyapp/template/TablaOpciones.fxml"));
+            Parent root = loader.load();
+
+            // Obtener el controlador de la nueva escena
+            Object controller = loader.getController();
+            if (controller instanceof UsuarioAwareController) {
+                // Pasar el usuario al nuevo controlador
+                ((UsuarioAwareController) controller).setUsuario(usuario);
+            }
+
+            // Cambiar de escena
+            Scene scene = new Scene(root, 600, 400);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
 
     }
 

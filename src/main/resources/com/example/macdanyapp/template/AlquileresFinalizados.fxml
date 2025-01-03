@@ -15,5 +15,6 @@
     </padding>
 
     <ListView fx:id="listViewAlquileresFinalizados" prefHeight="700" prefWidth="300"/>
+    <Button text="Volver" fx:id="buttonVolver"  onAction="#buttonVolver" prefWidth="180"/>
 
 </VBox>

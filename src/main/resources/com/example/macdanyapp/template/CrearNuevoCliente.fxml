@@ -31,5 +31,5 @@
     <!-- Etiqueta para mostrar mensajes -->
     <Label fx:id="lblError"  text="Campo vacio o erroneo" textFill="red" visible="false" />
     <Label fx:id="lblCorrecto"  text="Cliente agregado con exito" textFill="green" visible="false" />
-
+    <Button text="Volver" fx:id="buttonVolver"  onAction="#buttonVolver" prefWidth="180"/>
 </VBox>

@@ -14,30 +14,19 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
+<VBox  alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.macdanyapp.controllers.TablaOpcionesController">
-    <!-- Panel izquierdo con botones -->
-    <left>
-        <VBox alignment="CENTER" spacing="15.0" minWidth="200">
             <padding>
                 <Insets top="20.0" right="10.0" bottom="20.0" left="10.0"/>
             </padding>
-            <Button text="Nuevo Alquiler" onAction="#mostrarNuevoAlquiler" prefWidth="180"/>
-            <Button text="Alquileres Activos" onAction="#mostrarAlquileresActivos" prefWidth="180"/>
-            <Button text="Alquileres Pendientes" onAction="#mostrarAlquileresPendientes" prefWidth="180"/>
-            <Button text="Alquileres Finalizados" onAction="#mostrarAlquileresFinalizados" prefWidth="180"/>
-            <Button text="Stock" onAction="#mostrarStockDisponible" prefWidth="180"/>
-            <Button text="Crear Usuario" onAction="#crearUsuario" prefWidth="180"/>
-            <Label fx:id="laberErrorAdministrador" text="Permiso de Administrador" textFill="red" visible="false" />
-            <Button text="Nuevo cliente" onAction="#crearNuevoCliente" prefWidth="180"/>
+            <Button text="Nuevo Alquiler" fx:id="mostrarNuevoAlquiler" onAction="#mostrarNuevoAlquiler" prefWidth="180"/>
+            <Button text="Alquileres Activos"  fx:id="mostrarAlquileresActivos" onAction="#mostrarAlquileresActivos" prefWidth="180"/>
+            <Button text="Alquileres Pendientes" fx:id="mostrarAlquileresPendientes" onAction="#mostrarAlquileresPendientes" prefWidth="180"/>
+            <Button text="Alquileres Finalizados" fx:id="mostrarAlquileresFinalizados" onAction="#mostrarAlquileresFinalizados" prefWidth="180"/>
+            <Button text="Stock" fx:id="mostrarStockDisponible" onAction="#mostrarStockDisponible" prefWidth="180"/>
+            <Button text="Crear Usuario" fx:id="crearUsuario" onAction="#crearUsuario" prefWidth="180"/>
+            <Button text="Nuevo cliente" fx:id="crearNuevoCliente" onAction="#crearNuevoCliente" prefWidth="180"/>
 
-        </VBox>
-    </left>
+             <Label fx:id="laberErrorAdministrador" text="Permiso de Administrador" textFill="red" visible="false" />
 
-    <!-- Panel central donde se mostrarán las vistas -->
-    <center>
-        <StackPane  fx:id="vistaPrincipal">
-            <!-- Esta área se actualizará con las distintas vistas según el botón -->
-        </StackPane>
-    </center>
-</BorderPane>
+</VBox>

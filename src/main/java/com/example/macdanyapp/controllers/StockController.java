@@ -1,9 +1,6 @@
 package com.example.macdanyapp.controllers;
 
-import com.example.macdanyapp.entitys.Alquiler;
-import com.example.macdanyapp.entitys.Estado;
-import com.example.macdanyapp.entitys.Stock;
-import com.example.macdanyapp.entitys.TipoDeVajilla;
+import com.example.macdanyapp.entitys.*;
 import com.example.macdanyapp.services.AlquilerService;
 import com.example.macdanyapp.services.StockService;
 import com.example.macdanyapp.services.TipoDeVajillaService;
@@ -29,16 +26,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StockController {
+public class StockController implements UsuarioAwareController {
+
+    @FXML
+    public Button buttonVolver;
+    private Usuario usuario;
+
+    @Override
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 
     @FXML
     public Button buttonAgregarNuevaVajilla;
     @FXML
     private ListView<Stock> listViewStockDisponible;
-
-
-
-
 
     private List<Stock> listaStock=new ArrayList<Stock>();
     StockService stockService=new StockService();
@@ -89,5 +91,24 @@ public class StockController {
 
     }
 
-    //FUNCIONA PERFECTO HASTA AHORA
+    @FXML
+    public void buttonVolver(ActionEvent event) throws IOException {
+        // Cargar el archivo FXML
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/macdanyapp/template/TablaOpciones.fxml"));
+        Parent root = loader.load();
+
+        // Obtener el controlador de la nueva escena
+        Object controller = loader.getController();
+        if (controller instanceof UsuarioAwareController) {
+            // Pasar el usuario al nuevo controlador
+            ((UsuarioAwareController) controller).setUsuario(usuario);
+        }
+
+        // Cambiar de escena
+        Scene scene = new Scene(root, 600, 400);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.show();
+    }
 }
