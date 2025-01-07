@@ -238,6 +238,44 @@ public class AlquilerDAO {
     }
 
 
+    public List<Alquiler> traerAlquilerYActivarlo(Estado estado, LocalDate fecha) throws SQLException {
+        String sql = "SELECT * FROM alquiler WHERE estado = ? AND fechaComienzo = ?";
+        List<Alquiler> listaAlquileres = new ArrayList<>();  // Declaramos una variable para almacenar el cliente
+        Alquiler alquiler = null;
+
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1,estado.name());
+            ps.setDate(2, Date.valueOf(fecha));
+            try (ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+                    int clienteId = rs.getInt("cliente_id");
+                    String estadoStr=rs.getString("estado");
+                    alquiler = new Alquiler(
+                            rs.getInt("idAlquiler"),
+                            rs.getDate("fechaComienzo").toLocalDate(),
+                            rs.getDate("fechaFinalizacion").toLocalDate(),
+                            rs.getTime("horaComienzo").toLocalTime(),
+                            rs.getTime("horaFinalizacion").toLocalTime(),
+                            rs.getInt("diasDeAlquiler"),
+                            rs.getFloat("costoDelivery"),
+                            rs.getFloat("totalAlquiler"),
+                            Estado.valueOf(estadoStr), // Convierte el String a Enum
+                            multaService.traerMulta(clienteId),
+                            clienteService.traerCliente(clienteId) // Traemos el cliente usando el clienteId
+                    );
+                    if(alquiler.getFechaComienzo().equals(fecha)){
+                        listaAlquileres.add(alquiler);
+                    }
+
+                }
+            }
+        }
+        return listaAlquileres; // Retornamos el objeto cliente
+    }
+
+
 
     public void eliminarAlquiler(long idAlquiler) throws SQLException {
         String sql = "DELETE FROM alquiler WHERE idAlquiler = ?";

@@ -235,7 +235,9 @@ public class testGeneral
 
        //alquilerService.traerAlquileresPorFechaYEstado(fecha,fecha2,Estado.ACTIVO);
 
+        LocalDate fechaActual=LocalDate.now();
 
+        //alquilerService.traerAlquilerYActivarlo(Estado.PENDIENTE,fechaActual);
 
     }
 }

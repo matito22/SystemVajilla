@@ -134,4 +134,23 @@ public class AlquilerService {
         }
 
     }
+
+
+    public List<Alquiler> traerAlquilerYActivarlo(Estado estado, LocalDate fecha) throws SQLException {
+        List<Alquiler> alquilerLista = null;
+        try {
+            alquilerLista = alquilerDAO.traerAlquilerYActivarlo(estado, fecha);
+            if (alquilerLista != null) {
+                System.out.println("Alquileres encontrados: " + alquilerLista);
+            } else {
+                System.out.println("Alquileres no encontrados.");
+            }
+
+
+        } catch (SQLException e) {
+            System.err.println("Error al traer los alquileres: " + e.getMessage());
+        }
+        return alquilerLista;
+    }
+
 }
