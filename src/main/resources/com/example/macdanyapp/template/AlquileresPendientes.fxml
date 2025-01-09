@@ -18,22 +18,48 @@
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
-    <HBox alignment="CENTER" spacing="10.0">
-        <TextField fx:id="searchFieldAlquilerPendientes" promptText="Seleccionar Alquiler Pendientes" prefWidth="500" />
-        <TextField fx:id="searchFieldAlquilerPendientesHoy" promptText="Seleccionar Alquiler Día de Hoy" prefWidth="500" />
+
+
+
+    <HBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
+        <TextField fx:id="searchFieldAlquilerPendientes" promptText="" managed="true"/>
+        <TextField fx:id="searchFieldAlquilerPendientesHoy" promptText="" managed="true"/>
     </HBox>
-    <HBox alignment="CENTER" spacing="10.0">
-        <ListView fx:id="listViewAlquileresPendientes" prefHeight="600" prefWidth="500"/>
-        <ListView fx:id="listViewAlquileresPendientesDiaDeHoy" prefHeight="600" prefWidth="500"/>
+    <VBox alignment="CENTER" spacing="30.0" >
+        <DatePicker fx:id="txtFechaComienzoPicker" promptText="Fecha de Comienzo" visible="false" managed="false"/>
+        <DatePicker fx:id="txtFechaFinalizacionPicker" promptText="Fecha de Finalizacion" visible="false" managed="false"/>
+        <Label fx:id="lblErrorFecha" text="Fecha incorrecta" textFill="red" visible="false" />
+        <TextField fx:id="txtHoraComienzo" promptText="Hora de comienzo" prefWidth="500" visible="false" managed="false"/>
+        <TextField fx:id="txtHoraFinalizacion" promptText="Hora de finalización" prefWidth="500" visible="false" managed="false"/>
+        <Label fx:id="lblErrorHorario" text="Horario incorrecto" textFill="red" visible="false" />
+        <TextField fx:id="txtDiasDeAlquiler" promptText="Dias de Alquiler" prefWidth="500" visible="false" managed="false"/>
+        <Label fx:id="lblErrorDiasDeAlquiler" text="Dias de alquiler incorrecto" textFill="red" visible="false" />
+        <TextField fx:id="txtCostoDelivery" promptText="Costo del Delivery" prefWidth="500" visible="false" managed="false"/>
+        <Label fx:id="lblErrorCostoDelivery" text="Costo Delivery incorrecto" textFill="red" visible="false" />
+        <ComboBox fx:id="miComboBoxEstado" editable="true" prefWidth="300"  visible="false" managed="false">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="ACTIVO"/>
+                    <String fx:value="FINALIZADO"/>
+                    <String fx:value="PENDIENTE"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <TextField fx:id="searchFieldClientes"  visible="false" managed="false"/>
+        <ListView fx:id="listViewClientes" prefHeight="200" prefWidth="300" visible="false" managed="false"/>
+        <Label fx:id="lblErrorCamposVacios" text="Hay campos vacios" textFill="red" visible="false" />
+
+    </VBox>
+    <HBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
+        <ListView fx:id="listViewAlquileresPendientes" prefHeight="600" prefWidth="500" visible="true" managed="true"/>
+        <ListView fx:id="listViewAlquileresPendientesDiaDeHoy" prefHeight="600" prefWidth="500" visible="true" managed="true"/>
     </HBox>
 
-    <HBox alignment="CENTER" spacing="350.0">
-        <Button text="Modificar Datos" fx:id="buttonModificarAlquiler"  onAction="#buttonModificarAlquiler" prefWidth="180"/>
-        <Button text="Activar alquiler" fx:id="buttonActivarAlquiler"  onAction="#buttonActivarAlquiler" prefWidth="180"/>
+    <HBox alignment="CENTER" spacing="350.0" VBox.vgrow="ALWAYS">
+        <Button text="Modificar Datos" fx:id="buttonModificarAlquiler" onAction="#buttonModificarAlquiler" prefWidth="180"/>
+        <Button text="Activar alquiler" fx:id="buttonActivarAlquiler" onAction="#buttonActivarAlquiler" prefWidth="180"/>
+        <Button text="Volver" fx:id="buttonVolver"  onAction="#buttonVolver" prefWidth="180"/>
+        <Button text="Modificar" fx:id="buttonModificar"  onAction="#buttonModificar" prefWidth="180" visible="false" managed="false"/>
+        <Label fx:id="lblCorrecto"  text="Alquiler Activado" textFill="green" visible="false" />
     </HBox>
-
-    <!--Hay que mostrar en textField los datos del alquiler y que se puedan modificar y se tomen esos nuevos valores y se modifique el alquiler-->
-
-    <Button text="Volver" fx:id="buttonVolver"  onAction="#buttonVolver" prefWidth="180"/>
-    <Label fx:id="lblCorrecto"  text="Alquiler finalizado" textFill="green" visible="false" />
 </VBox>

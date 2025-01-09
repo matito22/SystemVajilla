@@ -232,12 +232,16 @@ public class testGeneral
         //stockService.inserStock(stock);
         LocalDate fecha=LocalDate.of(2024,11,15);
         LocalDate fecha2=LocalDate.of(2024,11,20);
+        LocalTime hora=LocalTime.of(22,0,0);
+        LocalTime hora2=LocalTime.of(23,0,0);
 
        //alquilerService.traerAlquileresPorFechaYEstado(fecha,fecha2,Estado.ACTIVO);
 
         LocalDate fechaActual=LocalDate.now();
 
         //alquilerService.traerAlquilerYActivarlo(Estado.PENDIENTE,fechaActual);
+
+        alquilerService.modificarAlquilerCompleto(9,fecha,fecha2,hora,hora2,3,3,250F,1790F,Estado.ACTIVO);
 
     }
 }

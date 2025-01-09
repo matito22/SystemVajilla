@@ -153,4 +153,16 @@ public class AlquilerService {
         return alquilerLista;
     }
 
+    public void modificarAlquilerCompleto(long idAlquiler,LocalDate fechaComienzo,LocalDate fechaFinalizacion,LocalTime horaComienzo,LocalTime horaFinalizacion,int idCliente,Integer diasAlquiler,float costoDelivery,
+                                          float totalAlquiler,Estado estado) throws SQLException {
+
+        try {
+            alquilerDAO.modificarAlquilerCompleto(idAlquiler,fechaComienzo,fechaFinalizacion,horaComienzo,horaFinalizacion,idCliente,diasAlquiler,costoDelivery,totalAlquiler,estado);
+            System.out.println("Alquiler Modificado");
+        } catch (Exception e) {
+            System.out.println("Alquiler No Modificado");
+        }
+
+    }
+
 }

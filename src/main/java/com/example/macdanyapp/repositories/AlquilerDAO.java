@@ -302,4 +302,21 @@ public class AlquilerDAO {
         }
     }
 
+    public void modificarAlquilerCompleto(long idAlquiler,LocalDate fechaComienzo,LocalDate fechaFinalizacion,LocalTime horaComienzo,LocalTime horaFinalizacion,int idCliente,Integer diasAlquiler,float costoDelivery,
+    float totalAlquiler,Estado estado) throws SQLException {
+        String sql="UPDATE alquiler SET fechaComienzo = ?,fechaFinalizacion = ?,horaComienzo = ?, horaFinalizacion = ?,cliente_id = ?,diasDeAlquiler = ?,costoDelivery = ?,totalAlquiler = ?, estado = ? WHERE idAlquiler = ?";
+        try(PreparedStatement ps = connection.prepareStatement(sql)){
+            ps.setString(1, fechaComienzo.toString());
+            ps.setString(2, fechaFinalizacion.toString());
+            ps.setString(3, horaComienzo.toString());
+            ps.setInt(4, idCliente);
+            ps.setInt(5, diasAlquiler);
+            ps.setFloat(6, costoDelivery);
+            ps.setFloat(7, totalAlquiler);
+            ps.setFloat(8, estado.ordinal());
+            ps.setLong(9, idAlquiler);
+            ps.executeUpdate();
+        }
+    }
+
 }

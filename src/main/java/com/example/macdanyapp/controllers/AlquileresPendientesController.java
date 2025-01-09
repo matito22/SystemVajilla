@@ -1,10 +1,8 @@
 package com.example.macdanyapp.controllers;
 
-import com.example.macdanyapp.entitys.Alquiler;
-import com.example.macdanyapp.entitys.Estado;
-import com.example.macdanyapp.entitys.Usuario;
-import com.example.macdanyapp.entitys.UsuarioAwareController;
+import com.example.macdanyapp.entitys.*;
 import com.example.macdanyapp.services.AlquilerService;
+import com.example.macdanyapp.services.ClienteService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,11 +12,15 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,20 @@ public class AlquileresPendientesController implements UsuarioAwareController {
 
     @FXML
     public ListView<Alquiler> listViewAlquileresPendientesDiaDeHoy;
+    @FXML
+    public Label lblErrorFecha;
+    @FXML
+    public Label lblErrorHorario;
+    @FXML
+    public Label lblErrorDiasDeAlquiler;
+    @FXML
+    public Label lblErrorCostoDelivery;
+    @FXML
+    public Label lblErrorCamposVacios;
+    @FXML
+    private ListView<Cliente> listViewClientes;
+    @FXML
+    private ListView<DetalleAlquiler> listViewDetalleActualizado;
 
     @FXML
     public Button buttonActivarAlquiler;
@@ -37,10 +53,31 @@ public class AlquileresPendientesController implements UsuarioAwareController {
     public TextField searchFieldAlquilerPendientesHoy;
     @FXML
     public Button buttonModificarAlquiler;
+
+    @FXML
+    public TextField txtHoraComienzo;
+    @FXML
+    public TextField txtHoraFinalizacion;
+    @FXML
+    public TextField txtDiasDeAlquiler;
+    @FXML
+    public TextField txtCostoDelivery;
+    @FXML
+    public ComboBox miComboBoxEstado;
+    @FXML
+    public DatePicker txtFechaComienzoPicker;
+    @FXML
+    public DatePicker txtFechaFinalizacionPicker;
+    @FXML
+    public Button buttonModificar;
+    @FXML
+    public TextField searchFieldClientes;
+
     @FXML
     private Usuario usuario;
     @FXML
     private Alquiler alquiler;
+    private List<Cliente> clientes;
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
@@ -62,12 +99,15 @@ public class AlquileresPendientesController implements UsuarioAwareController {
 
     private ObservableList<Alquiler> alquileresObservableList = FXCollections.observableArrayList();
     private ObservableList<Alquiler> alquileresObservableList2 = FXCollections.observableArrayList();
+    private ObservableList<DetalleAlquiler> detallesObservableList = FXCollections.observableArrayList();
 
     private List<Alquiler> listaAlquileres=new ArrayList<Alquiler>();
     private List<Alquiler> listaAlquileres2=new ArrayList<Alquiler>();
     AlquilerService alquilerService=new AlquilerService();
+    ClienteService clienteService = new ClienteService();
 
     public void initialize() throws SQLException {
+
         lblCorrecto.setVisible(false);
         //LISTA ALQUILERES PENDIENTES
         listaAlquileres = alquilerService.traerAlquilerPorEstado(Estado.PENDIENTE);
@@ -162,11 +202,194 @@ public class AlquileresPendientesController implements UsuarioAwareController {
         }
     }
     @FXML
-    public void buttonModificarAlquiler(ActionEvent event) throws IOException {
+    public void buttonModificarAlquiler(ActionEvent event) throws IOException, SQLException {
+
+
+        clientes = clienteService.traerListaClientes();
+
+        // Convierte la lista de clientes a ObservableList
+        ObservableList<Cliente> clientesObservableList = FXCollections.observableArrayList(clientes);
+        listViewClientes.setItems(clientesObservableList);
+
+        // Define cómo se mostrará cada Cliente en el ListView
+        listViewClientes.setCellFactory(param -> new javafx.scene.control.ListCell<>() {
+            protected void updateItem(Cliente cliente, boolean empty) {
+                super.updateItem(cliente, empty);
+                if (empty || cliente == null) {
+                    setText(null);
+                } else {
+                    setText(cliente.toString()); // Muestra el nombre y apellido
+                }
+            }
+        });
+
+        // Filtra los clientes basándose en la entrada del usuario
+        searchFieldClientes.addEventFilter(KeyEvent.KEY_RELEASED, event2 -> {
+            String filter = searchFieldClientes.getText().toLowerCase();
+            if (filter.isEmpty()) {
+                listViewClientes.setItems(FXCollections.observableArrayList());
+                listViewClientes.setVisible(false); // Oculta si no hay filtro
+            } else {
+                ObservableList<Cliente> filteredList = FXCollections.observableArrayList(
+                        clientes.stream()
+                                .filter(cliente -> cliente.toString().toLowerCase().contains(filter))
+                                .toList()
+                );
+                listViewClientes.setItems(filteredList);
+                listViewClientes.setVisible(!filteredList.isEmpty()); // Muestra solo si hay resultados
+            }
+        });
+
+        /*listViewClientes.setOnMouseClicked(event -> {
+            Cliente selectedCliente = listViewClientes.getSelectionModel().getSelectedItem();
+            if (selectedCliente != null) {
+                searchFieldClientes.setText(selectedCliente.toString()); // Muestra el cliente seleccionado en el TextField
+                listViewClientes.setVisible(false); // Oculta el ListView
+            }
+        });*/
+
+
+    //MANEJAMOS LOS ESTADOS
+        miComboBoxEstado.setConverter(new StringConverter<Estado>() {
+            @Override
+            public String toString(Estado estado) {
+                return estado != null ? estado.toString() : "";
+            }
+
+            @Override
+            public Estado fromString(String string) {
+                return Estado.valueOf(string);  // Convierte el String de nuevo a un Estado
+            }
+        });
+
+        // Rellenar txtEstado con valores del enum Estado
+        ObservableList<Estado> estados = FXCollections.observableArrayList(Estado.values());
+        miComboBoxEstado.setItems(estados);
+
+        // Agregar un mensaje al cambiar el estado
+        miComboBoxEstado.setOnAction(event1 -> {
+            Estado seleccionado = (Estado) miComboBoxEstado.getValue();
+            if (seleccionado != null) {
+                System.out.println("Estado seleccionado: " + seleccionado);
+            }
+        });
+
+
+
+        //DEJAMOS DE MOSTRAR LO DE ANTES Y MOSTRAMOS LO NUEVO
         Alquiler alquiler = listViewAlquileresPendientes.getSelectionModel().getSelectedItem();
         listViewAlquileresPendientes.setVisible(false);
         listViewAlquileresPendientesDiaDeHoy.setVisible(false);
+        listViewAlquileresPendientes.setManaged(false);
+        listViewAlquileresPendientesDiaDeHoy.setManaged(false);
+        searchFieldAlquilerPendientes.setVisible(false);
+        searchFieldAlquilerPendientes.setManaged(false);
+        searchFieldAlquilerPendientesHoy.setVisible(false);
+        searchFieldAlquilerPendientesHoy.setManaged(false);
+        buttonActivarAlquiler.setVisible(false);
+        buttonActivarAlquiler.setManaged(false);
+        buttonModificarAlquiler.setVisible(false);
+        buttonModificarAlquiler.setManaged(false);
 
+        txtFechaComienzoPicker.setVisible(true);
+        txtFechaFinalizacionPicker.setVisible(true);
+        txtHoraComienzo.setVisible(true);
+        txtHoraFinalizacion.setVisible(true);
+        txtDiasDeAlquiler.setVisible(true);
+        txtFechaComienzoPicker.setManaged(true);
+        txtFechaFinalizacionPicker.setManaged(true);
+        txtHoraComienzo.setManaged(true);
+        txtHoraFinalizacion.setManaged(true);
+        txtDiasDeAlquiler.setManaged(true);
+        miComboBoxEstado.setVisible(true);
+        miComboBoxEstado.setManaged(true);
+        txtCostoDelivery.setVisible(true);
+        txtCostoDelivery.setManaged(true);
+        buttonModificar.setVisible(true);
+        buttonModificar.setManaged(true);
+        searchFieldClientes.setVisible(true);
+        searchFieldClientes.setManaged(true);
+        listViewClientes.setManaged(true);
+
+
+        //LLENAMOS LOS CAMPOS CON LOS VALORES DEL ALQUILER SELECCIONADO
+
+        txtFechaComienzoPicker.setValue(alquiler.getFechaComienzo());
+        txtFechaFinalizacionPicker.setValue(alquiler.getFechaFinalizacion());
+        String hora = alquiler.getHoraComienzoTime().toString();
+        txtHoraComienzo.setText(hora);
+        String hora2=alquiler.getHoraFinalizacionTime().toString();
+        txtHoraFinalizacion.setText(hora2);
+        txtDiasDeAlquiler.setText(alquiler.getDiasAlquiler().toString());
+        txtCostoDelivery.setText(alquiler.getCostoDelivery().toString());
+        Estado estado=alquiler.getEstado();
+        miComboBoxEstado.setValue(estado);
+        searchFieldClientes.setText(alquiler.getCliente().toString());
+
+
+    }
+
+    @FXML
+    public void buttonModificar(ActionEvent event) {
+        //CREAMOS EL ALQUILER
+        LocalTime horaComienzo = null;
+        LocalTime horaFinalizacion = null;
+        LocalDate fecha=null;
+        LocalDate fecha2=null;
+        Multa multa = null;
+        Integer diasDeAlquiler=null;
+        Float costoDelivery=null;
+        try{
+            fecha=txtFechaComienzoPicker.getValue();
+            fecha2=txtFechaFinalizacionPicker.getValue();
+            if (fecha == null || fecha2 == null) {
+                throw new NullPointerException("Las fechas no pueden ser nulas");
+            }
+            lblErrorFecha.setVisible(false);
+        } catch (Exception e) {
+            lblErrorFecha.setVisible(true);
+            throw new RuntimeException(e);
+        }
+
+        try {
+            String hora = txtHoraComienzo.getText();
+            horaComienzo = LocalTime.parse(hora);
+            String hora2 = txtHoraFinalizacion.getText();
+            horaFinalizacion = LocalTime.parse(hora2);
+            lblErrorHorario.setVisible(false);
+
+        } catch (DateTimeParseException e) {
+            lblErrorHorario.setVisible(true);
+            throw new RuntimeException(e);
+        }
+
+        try{
+            diasDeAlquiler= Integer.parseInt(txtDiasDeAlquiler.getText());
+            lblErrorDiasDeAlquiler.setVisible(false);
+        } catch (NumberFormatException e) {
+            lblErrorDiasDeAlquiler.setVisible(true);
+            throw new RuntimeException(e);
+        }
+
+        try{
+            costoDelivery= Float.parseFloat(txtCostoDelivery.getText());
+            lblErrorCostoDelivery.setVisible(false);
+        } catch (Exception e) {
+            lblErrorCostoDelivery.setVisible(true);
+            throw new RuntimeException(e);
+        }
+
+        Estado estado= (Estado) miComboBoxEstado.getValue();
+        Cliente cliente= listViewClientes.getSelectionModel().getSelectedItem();
+        if(estado==null || cliente==null){
+            lblErrorCamposVacios.setVisible(true);
+        }
+
+        try{
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }
