@@ -309,12 +309,13 @@ public class AlquilerDAO {
             ps.setString(1, fechaComienzo.toString());
             ps.setString(2, fechaFinalizacion.toString());
             ps.setString(3, horaComienzo.toString());
-            ps.setInt(4, idCliente);
-            ps.setInt(5, diasAlquiler);
-            ps.setFloat(6, costoDelivery);
-            ps.setFloat(7, totalAlquiler);
-            ps.setFloat(8, estado.ordinal());
-            ps.setLong(9, idAlquiler);
+            ps.setString(4, horaFinalizacion.toString());
+            ps.setInt(5, idCliente);
+            ps.setInt(6, diasAlquiler);
+            ps.setFloat(7, costoDelivery);
+            ps.setFloat(8, totalAlquiler);
+            ps.setString(9, estado.name()); // Cambiado a setInt para el índice correcto
+            ps.setLong(10, idAlquiler);    // Cambiado al índice correcto
             ps.executeUpdate();
         }
     }

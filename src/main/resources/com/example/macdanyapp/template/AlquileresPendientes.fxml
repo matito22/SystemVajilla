@@ -60,6 +60,7 @@
         <Button text="Activar alquiler" fx:id="buttonActivarAlquiler" onAction="#buttonActivarAlquiler" prefWidth="180"/>
         <Button text="Volver" fx:id="buttonVolver"  onAction="#buttonVolver" prefWidth="180"/>
         <Button text="Modificar" fx:id="buttonModificar"  onAction="#buttonModificar" prefWidth="180" visible="false" managed="false"/>
+        <Label fx:id="lblAlquilerModificado"  text="Alquiler Modificado" textFill="green" visible="false" />
         <Label fx:id="lblCorrecto"  text="Alquiler Activado" textFill="green" visible="false" />
     </HBox>
 </VBox>

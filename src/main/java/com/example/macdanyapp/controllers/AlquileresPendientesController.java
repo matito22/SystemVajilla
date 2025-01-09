@@ -39,6 +39,8 @@ public class AlquileresPendientesController implements UsuarioAwareController {
     @FXML
     public Label lblErrorCamposVacios;
     @FXML
+    public Label lblAlquilerModificado;
+    @FXML
     private ListView<Cliente> listViewClientes;
     @FXML
     private ListView<DetalleAlquiler> listViewDetalleActualizado;
@@ -96,6 +98,8 @@ public class AlquileresPendientesController implements UsuarioAwareController {
     public Button buttonVolver;
     @FXML
     private ListView<Alquiler> listViewAlquileresPendientes;
+
+    private Alquiler alquilerSeleccionado;
 
     private ObservableList<Alquiler> alquileresObservableList = FXCollections.observableArrayList();
     private ObservableList<Alquiler> alquileresObservableList2 = FXCollections.observableArrayList();
@@ -240,14 +244,13 @@ public class AlquileresPendientesController implements UsuarioAwareController {
             }
         });
 
-        /*listViewClientes.setOnMouseClicked(event -> {
+        listViewClientes.setOnMouseClicked(event2 -> {
             Cliente selectedCliente = listViewClientes.getSelectionModel().getSelectedItem();
             if (selectedCliente != null) {
                 searchFieldClientes.setText(selectedCliente.toString()); // Muestra el cliente seleccionado en el TextField
                 listViewClientes.setVisible(false); // Oculta el ListView
             }
-        });*/
-
+        });
 
     //MANEJAMOS LOS ESTADOS
         miComboBoxEstado.setConverter(new StringConverter<Estado>() {
@@ -277,7 +280,7 @@ public class AlquileresPendientesController implements UsuarioAwareController {
 
 
         //DEJAMOS DE MOSTRAR LO DE ANTES Y MOSTRAMOS LO NUEVO
-        Alquiler alquiler = listViewAlquileresPendientes.getSelectionModel().getSelectedItem();
+        alquilerSeleccionado = listViewAlquileresPendientes.getSelectionModel().getSelectedItem();
         listViewAlquileresPendientes.setVisible(false);
         listViewAlquileresPendientesDiaDeHoy.setVisible(false);
         listViewAlquileresPendientes.setManaged(false);
@@ -314,23 +317,23 @@ public class AlquileresPendientesController implements UsuarioAwareController {
 
         //LLENAMOS LOS CAMPOS CON LOS VALORES DEL ALQUILER SELECCIONADO
 
-        txtFechaComienzoPicker.setValue(alquiler.getFechaComienzo());
-        txtFechaFinalizacionPicker.setValue(alquiler.getFechaFinalizacion());
-        String hora = alquiler.getHoraComienzoTime().toString();
+        txtFechaComienzoPicker.setValue(alquilerSeleccionado.getFechaComienzo());
+        txtFechaFinalizacionPicker.setValue(alquilerSeleccionado.getFechaFinalizacion());
+        String hora = alquilerSeleccionado.getHoraComienzoTime().toString();
         txtHoraComienzo.setText(hora);
-        String hora2=alquiler.getHoraFinalizacionTime().toString();
+        String hora2=alquilerSeleccionado.getHoraFinalizacionTime().toString();
         txtHoraFinalizacion.setText(hora2);
-        txtDiasDeAlquiler.setText(alquiler.getDiasAlquiler().toString());
-        txtCostoDelivery.setText(alquiler.getCostoDelivery().toString());
-        Estado estado=alquiler.getEstado();
+        txtDiasDeAlquiler.setText(alquilerSeleccionado.getDiasAlquiler().toString());
+        txtCostoDelivery.setText(alquilerSeleccionado.getCostoDelivery().toString());
+        Estado estado=alquilerSeleccionado.getEstado();
         miComboBoxEstado.setValue(estado);
-        searchFieldClientes.setText(alquiler.getCliente().toString());
+        searchFieldClientes.setText(alquilerSeleccionado.getCliente().toString());
 
 
     }
 
     @FXML
-    public void buttonModificar(ActionEvent event) {
+    public int buttonModificar(ActionEvent event) {
         //CREAMOS EL ALQUILER
         LocalTime horaComienzo = null;
         LocalTime horaFinalizacion = null;
@@ -339,17 +342,18 @@ public class AlquileresPendientesController implements UsuarioAwareController {
         Multa multa = null;
         Integer diasDeAlquiler=null;
         Float costoDelivery=null;
-        try{
-            fecha=txtFechaComienzoPicker.getValue();
-            fecha2=txtFechaFinalizacionPicker.getValue();
-            if (fecha == null || fecha2 == null) {
-                throw new NullPointerException("Las fechas no pueden ser nulas");
-            }
-            lblErrorFecha.setVisible(false);
-        } catch (Exception e) {
+
+        fecha=txtFechaComienzoPicker.getValue();
+        fecha2=txtFechaFinalizacionPicker.getValue();
+        lblErrorFecha.setVisible(false);
+
+        //ESTA VALIDACION NO FUNCIONA, SI SE INGRESA VACIO TOMA LAS FECHAS ANTERIORES
+        if (fecha == null || fecha2 == null) {
             lblErrorFecha.setVisible(true);
-            throw new RuntimeException(e);
+            return 0; // O cualquier valor que consideres apropiado en caso de error
         }
+        lblErrorFecha.setVisible(false);
+
 
         try {
             String hora = txtHoraComienzo.getText();
@@ -360,7 +364,7 @@ public class AlquileresPendientesController implements UsuarioAwareController {
 
         } catch (DateTimeParseException e) {
             lblErrorHorario.setVisible(true);
-            throw new RuntimeException(e);
+            return 0;
         }
 
         try{
@@ -368,7 +372,7 @@ public class AlquileresPendientesController implements UsuarioAwareController {
             lblErrorDiasDeAlquiler.setVisible(false);
         } catch (NumberFormatException e) {
             lblErrorDiasDeAlquiler.setVisible(true);
-            throw new RuntimeException(e);
+            return 0;
         }
 
         try{
@@ -376,20 +380,27 @@ public class AlquileresPendientesController implements UsuarioAwareController {
             lblErrorCostoDelivery.setVisible(false);
         } catch (Exception e) {
             lblErrorCostoDelivery.setVisible(true);
-            throw new RuntimeException(e);
+            return 0;
         }
 
         Estado estado= (Estado) miComboBoxEstado.getValue();
         Cliente cliente= listViewClientes.getSelectionModel().getSelectedItem();
+        if(cliente==null){
+            cliente=alquilerSeleccionado.getCliente();
+
+        }
         if(estado==null || cliente==null){
             lblErrorCamposVacios.setVisible(true);
+            return 0;
         }
 
         try{
-
+            alquilerService.modificarAlquilerCompleto(alquilerSeleccionado.getIdAlquiler(),fecha,fecha2,horaComienzo,horaFinalizacion,cliente.getIdCliente(),diasDeAlquiler,costoDelivery,alquilerSeleccionado.getTotalAlquiler(),estado);
+            lblAlquilerModificado.setVisible(true);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            lblAlquilerModificado.setVisible(false);
+            return 0;
         }
-
+        return 1;
     }
 }

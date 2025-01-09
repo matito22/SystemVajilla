@@ -241,7 +241,7 @@ public class testGeneral
 
         //alquilerService.traerAlquilerYActivarlo(Estado.PENDIENTE,fechaActual);
 
-        alquilerService.modificarAlquilerCompleto(9,fecha,fecha2,hora,hora2,3,3,250F,1790F,Estado.ACTIVO);
+        //alquilerService.modificarAlquilerCompleto(9,fecha,fecha2,hora,hora2,3,3,250F,1790F,Estado.ACTIVO);
 
     }
 }
