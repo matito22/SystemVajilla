@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
@@ -40,6 +41,14 @@ public class AlquileresPendientesController implements UsuarioAwareController {
     public Label lblErrorCamposVacios;
     @FXML
     public Label lblAlquilerModificado;
+    @FXML
+    public VBox vistaAlquileresPendientes;
+    @FXML
+    public VBox vistaModificarAlquiler;
+    @FXML
+    public Button buttonVolver2;
+    @FXML
+    public Label lblError;
     @FXML
     private ListView<Cliente> listViewClientes;
     @FXML
@@ -99,6 +108,7 @@ public class AlquileresPendientesController implements UsuarioAwareController {
     @FXML
     private ListView<Alquiler> listViewAlquileresPendientes;
 
+
     private Alquiler alquilerSeleccionado;
 
     private ObservableList<Alquiler> alquileresObservableList = FXCollections.observableArrayList();
@@ -112,7 +122,10 @@ public class AlquileresPendientesController implements UsuarioAwareController {
 
     public void initialize() throws SQLException {
 
+
         lblCorrecto.setVisible(false);
+
+
         //LISTA ALQUILERES PENDIENTES
         listaAlquileres = alquilerService.traerAlquilerPorEstado(Estado.PENDIENTE);
         ObservableList<Alquiler> alquileresObservableList = FXCollections.observableArrayList(listaAlquileres);
@@ -208,6 +221,21 @@ public class AlquileresPendientesController implements UsuarioAwareController {
     @FXML
     public void buttonModificarAlquiler(ActionEvent event) throws IOException, SQLException {
 
+        //NO FUNCIONA, REVISAR 10-01
+        alquilerSeleccionado=listViewAlquileresPendientes.getSelectionModel().getSelectedItem();
+        if(alquilerSeleccionado==null){
+            lblError.setText("Seleccione alquiler");
+            lblError.setVisible(true);
+        }
+
+        // Ocultar la vista principal
+        vistaAlquileresPendientes.setVisible(false);
+        vistaAlquileresPendientes.setManaged(false);
+
+        // Mostrar la vista de modificación
+        vistaModificarAlquiler.setVisible(true);
+        vistaModificarAlquiler.setManaged(true);
+
 
         clientes = clienteService.traerListaClientes();
 
@@ -281,38 +309,8 @@ public class AlquileresPendientesController implements UsuarioAwareController {
 
         //DEJAMOS DE MOSTRAR LO DE ANTES Y MOSTRAMOS LO NUEVO
         alquilerSeleccionado = listViewAlquileresPendientes.getSelectionModel().getSelectedItem();
-        listViewAlquileresPendientes.setVisible(false);
-        listViewAlquileresPendientesDiaDeHoy.setVisible(false);
-        listViewAlquileresPendientes.setManaged(false);
-        listViewAlquileresPendientesDiaDeHoy.setManaged(false);
-        searchFieldAlquilerPendientes.setVisible(false);
-        searchFieldAlquilerPendientes.setManaged(false);
-        searchFieldAlquilerPendientesHoy.setVisible(false);
-        searchFieldAlquilerPendientesHoy.setManaged(false);
-        buttonActivarAlquiler.setVisible(false);
-        buttonActivarAlquiler.setManaged(false);
-        buttonModificarAlquiler.setVisible(false);
-        buttonModificarAlquiler.setManaged(false);
 
-        txtFechaComienzoPicker.setVisible(true);
-        txtFechaFinalizacionPicker.setVisible(true);
-        txtHoraComienzo.setVisible(true);
-        txtHoraFinalizacion.setVisible(true);
-        txtDiasDeAlquiler.setVisible(true);
-        txtFechaComienzoPicker.setManaged(true);
-        txtFechaFinalizacionPicker.setManaged(true);
-        txtHoraComienzo.setManaged(true);
-        txtHoraFinalizacion.setManaged(true);
-        txtDiasDeAlquiler.setManaged(true);
-        miComboBoxEstado.setVisible(true);
-        miComboBoxEstado.setManaged(true);
-        txtCostoDelivery.setVisible(true);
-        txtCostoDelivery.setManaged(true);
-        buttonModificar.setVisible(true);
-        buttonModificar.setManaged(true);
-        searchFieldClientes.setVisible(true);
-        searchFieldClientes.setManaged(true);
-        listViewClientes.setManaged(true);
+
 
 
         //LLENAMOS LOS CAMPOS CON LOS VALORES DEL ALQUILER SELECCIONADO
@@ -328,6 +326,7 @@ public class AlquileresPendientesController implements UsuarioAwareController {
         Estado estado=alquilerSeleccionado.getEstado();
         miComboBoxEstado.setValue(estado);
         searchFieldClientes.setText(alquilerSeleccionado.getCliente().toString());
+
 
 
     }
