@@ -57,23 +57,66 @@ public class CrearNuevaVajillaController implements UsuarioAwareController {
     TipoDeVajillaService tipoDeVajillaService=new TipoDeVajillaService();
     VajillaService vajillaService=new VajillaService();
 
+
+
+    //FUNCIONA, SOLO FALTA QUE ADEMAS DE CREAR LA VAJILLA, SE DEBE AGREGAR EL STOCK
     @FXML
-    public void buttonCrearVajilla() throws SQLException {
+    public boolean buttonCrearVajilla() throws SQLException {
         String nombreNuevoTipoDeVajilla = txtNombreTipoDeVajilla.getText();
         TipoDeVajilla tipoDeVajilla=new TipoDeVajilla(nombreNuevoTipoDeVajilla);
-        tipoDeVajillaService.insertTipoDeVajilla(tipoDeVajilla);
+        if(tipoDeVajillaService.traerTipoDeVajilla(nombreNuevoTipoDeVajilla)==null){
+            tipoDeVajillaService.insertTipoDeVajilla(tipoDeVajilla);
+            lblError.setVisible(false);
 
-        String modeloNuevoTipoDeVajilla = txtModeloVajilla.getText();
-        String colorNuevoTipoDeVajilla = txtColorVajilla.getText();
-        String tamanioNuevoTipoDeVajilla = txtTamanioVajilla.getText();
-        Float precioNuevoTipoDeVajilla = Float.parseFloat(txtPrecioIndividualVajilla.getText());
+        }else{
 
-        //SE CREA EL TIPO DE VAJILLA, PERO NO LA VAJILLA, REVISAAAAAAR
+            lblError.setText("El tipo de vajilla ya existe");
+            lblError.setVisible(true);
+            return false;
+        }
+        //REVISAR NO FUNCIONA
 
-         Vajilla vajilla=new Vajilla(modeloNuevoTipoDeVajilla,colorNuevoTipoDeVajilla,precioNuevoTipoDeVajilla,tamanioNuevoTipoDeVajilla,tipoDeVajilla);
+            String modeloNuevoTipoDeVajilla;
+            String colorNuevoTipoDeVajilla;
+            String tamanioNuevoTipoDeVajilla;
+            Float precioNuevoTipoDeVajilla;
+
+
+
+            if(txtModeloVajilla.getText().isEmpty()){
+                modeloNuevoTipoDeVajilla=null;
+            }else{
+                modeloNuevoTipoDeVajilla=txtModeloVajilla.getText();
+            }
+            if(txtColorVajilla.getText().isEmpty()){
+                colorNuevoTipoDeVajilla=null;
+            }else{
+                colorNuevoTipoDeVajilla=txtColorVajilla.getText();
+            }
+
+            if(txtTamanioVajilla.getText().isEmpty()){
+                tamanioNuevoTipoDeVajilla=null;
+            }else{
+                tamanioNuevoTipoDeVajilla=txtTamanioVajilla.getText();
+            }
+
+           try{
+              precioNuevoTipoDeVajilla=Float.parseFloat(txtPrecioIndividualVajilla.getText());
+               lblError.setVisible(false);
+
+           } catch (Exception e) {
+               lblError.setText("El precio no es valido");
+               lblError.setVisible(true);
+               return false;
+           }
+
+           TipoDeVajilla tipoDeVajilla1=tipoDeVajillaService.traerTipoDeVajilla(nombreNuevoTipoDeVajilla);
+           Vajilla vajilla=new Vajilla(modeloNuevoTipoDeVajilla,colorNuevoTipoDeVajilla,precioNuevoTipoDeVajilla,tamanioNuevoTipoDeVajilla,tipoDeVajilla1);
+           System.out.println("ID DEL TIPO DE VAJILLA: "+vajilla.getTipoDeVajilla().getIdTipoDeVajilla());
 
        try{
            vajillaService.insertVajilla(vajilla);
+           System.out.println("SE INSERTO VAJILLA");
            lblCorrecto.setVisible(true);
            PauseTransition pause = new PauseTransition(Duration.seconds(3));
            pause.setOnFinished(event -> lblCorrecto.setVisible(false));
@@ -82,11 +125,12 @@ public class CrearNuevaVajillaController implements UsuarioAwareController {
        } catch (Exception e) {
            lblCorrecto.setVisible(false);
            lblError.setVisible(true);
+           return false;
 
        }
 
 
-
+        return true;
     }
 
     @FXML

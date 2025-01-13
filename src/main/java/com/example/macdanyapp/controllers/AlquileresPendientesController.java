@@ -220,12 +220,13 @@ public class AlquileresPendientesController implements UsuarioAwareController {
     }
     @FXML
     public void buttonModificarAlquiler(ActionEvent event) throws IOException, SQLException {
-
+        Alquiler alquilerSeleccionado2=null;
         //NO FUNCIONA, REVISAR 10-01
-        alquilerSeleccionado=listViewAlquileresPendientes.getSelectionModel().getSelectedItem();
-        if(alquilerSeleccionado==null){
+        alquilerSeleccionado2=listViewAlquileresPendientes.getSelectionModel().getSelectedItem();
+        if (alquilerSeleccionado2==null){
             lblError.setText("Seleccione alquiler");
             lblError.setVisible(true);
+            return;
         }
 
         // Ocultar la vista principal
@@ -238,6 +239,7 @@ public class AlquileresPendientesController implements UsuarioAwareController {
 
 
         clientes = clienteService.traerListaClientes();
+        listViewClientes.setVisible(false);
 
         // Convierte la lista de clientes a ObservableList
         ObservableList<Cliente> clientesObservableList = FXCollections.observableArrayList(clientes);

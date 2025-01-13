@@ -243,6 +243,11 @@ public class testGeneral
 
         //alquilerService.modificarAlquilerCompleto(9,fecha,fecha2,hora,hora2,3,3,250F,1790F,Estado.ACTIVO);
 
+        //Vajilla vajilla=new Vajilla(null,"BLANCO",100F,null,tipoDeVajillaService.traerTipoDeVajilla("MANTELES"));
+        //vajillaService.insertVajilla(vajilla);
+
+
+
     }
 }
 

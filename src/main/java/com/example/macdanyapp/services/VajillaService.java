@@ -20,9 +20,27 @@ public class VajillaService {
     }
 
     public void insertVajilla(Vajilla vajilla) throws SQLException {
-       vajillaDAO.insertVajilla(vajilla);
-        }
+        try {
+            // Verifica que el tipo de vajilla exista en la base de datos
+            TipoDeVajillaService tipoDeVajillaService=new TipoDeVajillaService();
+            TipoDeVajilla tipoDeVajilla = tipoDeVajillaService.traerTipoDeVajillaPorId(vajilla.getTipoDeVajilla().getIdTipoDeVajilla());
+            if (tipoDeVajilla == null) {
+                throw new SQLException("El idTipoDeVajilla no existe en la tabla tipo_de_vajilla: " + vajilla.getTipoDeVajilla().getIdTipoDeVajilla());
+            }
 
+            // Verifica si ya existe una vajilla con ese tipo
+            if (vajillaDAO.traerVajillaPorTipo(vajilla.getTipoDeVajilla().getIdTipoDeVajilla()) != null) {
+                System.out.println("La vajilla ya existe");
+            } else {
+                // Inserta la nueva vajilla
+                vajillaDAO.insertVajilla(vajilla);
+                System.out.println("La vajilla se agregó correctamente");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al insertar la vajilla: " + e.getMessage());
+            throw e; // Relanza la excepción para manejarla en niveles superiores
+        }
+    }
 
 
     public Vajilla traerVajilla(long idVajilla) throws SQLException {
