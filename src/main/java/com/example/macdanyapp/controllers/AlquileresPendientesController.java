@@ -215,7 +215,8 @@ public class AlquileresPendientesController implements UsuarioAwareController {
             alquilerService.modificarEstadoAlquiler(Estado.ACTIVO,alquiler.getIdAlquiler());
             lblCorrecto.setVisible(true);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+           lblError.setText("Alquiler no seleccionado");
+           lblCorrecto.setVisible(true);
         }
     }
     @FXML

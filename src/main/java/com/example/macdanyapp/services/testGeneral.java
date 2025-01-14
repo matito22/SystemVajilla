@@ -250,6 +250,8 @@ public class testGeneral
         //vajillaService.traerListaVajilla();
         //tipoDeVajillaService.traerTipoDeVajillaPorId(1);
 
+        alquilerService.modificarEstadoAlquiler(Estado.ACTIVO,10);
+
 
     }
 }
