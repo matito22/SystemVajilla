@@ -30,6 +30,8 @@ public class StockController implements UsuarioAwareController {
 
     @FXML
     public Button buttonVolver;
+    @FXML
+    public Button buttonModificarStock;
     private Usuario usuario;
 
     @Override
@@ -49,11 +51,11 @@ public class StockController implements UsuarioAwareController {
     @FXML
     public void initialize() throws SQLException {
 
+
         listaStock = stockService.traerStockDisponible();
         ObservableList<Stock> stockObservableList = FXCollections.observableArrayList(listaStock);
         stockObservableList.setAll(listaStock);
         listViewStockDisponible.setItems(stockObservableList);
-
 
         // Define cómo se mostrará cada Cliente en el ListView
         listViewStockDisponible.setCellFactory(param -> new javafx.scene.control.ListCell<>() {
@@ -78,6 +80,26 @@ public class StockController implements UsuarioAwareController {
     public void buttonAgregarNuevaVajilla(ActionEvent event) throws SQLException, IOException {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/macdanyapp/template/CrearNuevaVajilla.fxml"));
+        Parent root = loader.load();
+        Object controller = loader.getController();
+        if (controller instanceof UsuarioAwareController) {
+            // Pasar el usuario al nuevo controlador
+            ((UsuarioAwareController) controller).setUsuario(usuario);
+        }
+        // Crear una nueva escena
+        Scene scene = new Scene(root,1600,900);
+
+        // Obtener el Stage actual y establecer la nueva escena
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.show();
+
+    }
+
+    @FXML
+    public void buttonModificarStock(ActionEvent event) throws SQLException, IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/macdanyapp/template/ModificarStock.fxml"));
         Parent root = loader.load();
         Object controller = loader.getController();
         if (controller instanceof UsuarioAwareController) {

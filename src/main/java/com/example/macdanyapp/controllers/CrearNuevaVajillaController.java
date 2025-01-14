@@ -1,12 +1,11 @@
 package com.example.macdanyapp.controllers;
 
-import com.example.macdanyapp.entitys.TipoDeVajilla;
-import com.example.macdanyapp.entitys.Usuario;
-import com.example.macdanyapp.entitys.UsuarioAwareController;
-import com.example.macdanyapp.entitys.Vajilla;
+import com.example.macdanyapp.entitys.*;
 import com.example.macdanyapp.services.TipoDeVajillaService;
 import com.example.macdanyapp.services.VajillaService;
 import javafx.animation.PauseTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,24 +14,29 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CrearNuevaVajillaController implements UsuarioAwareController {
+
 
     @FXML
     private Usuario usuario;
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
     public Usuario getUsuario() {
         return usuario;
     }
+
 
     @FXML
     public Button buttonVolver;
@@ -52,6 +56,12 @@ public class CrearNuevaVajillaController implements UsuarioAwareController {
     public Label lblError;
     @FXML
     public Label lblCorrecto;
+    @FXML
+    private TextField searchFieldTipoDeVajilla;
+    @FXML
+    private ListView<TipoDeVajilla> listViewTiposDeVajilla;
+
+    private List<TipoDeVajilla> tipoDeVajillass= new ArrayList<>();
 
 
     TipoDeVajillaService tipoDeVajillaService=new TipoDeVajillaService();
@@ -62,25 +72,30 @@ public class CrearNuevaVajillaController implements UsuarioAwareController {
     //FUNCIONA, SOLO FALTA QUE ADEMAS DE CREAR LA VAJILLA, SE DEBE AGREGAR EL STOCK
     @FXML
     public boolean buttonCrearVajilla() throws SQLException {
+
+
         String nombreNuevoTipoDeVajilla = txtNombreTipoDeVajilla.getText();
         TipoDeVajilla tipoDeVajilla=new TipoDeVajilla(nombreNuevoTipoDeVajilla);
+        if(txtNombreTipoDeVajilla.getText().isEmpty()) {
+           lblError.setText("Campo vacio");
+           lblError.setVisible(true);
+        }
+
         if(tipoDeVajillaService.traerTipoDeVajilla(nombreNuevoTipoDeVajilla)==null){
             tipoDeVajillaService.insertTipoDeVajilla(tipoDeVajilla);
             lblError.setVisible(false);
 
         }else{
-
             lblError.setText("El tipo de vajilla ya existe");
             lblError.setVisible(true);
             return false;
         }
-        //REVISAR NO FUNCIONA
+
 
             String modeloNuevoTipoDeVajilla;
             String colorNuevoTipoDeVajilla;
             String tamanioNuevoTipoDeVajilla;
             Float precioNuevoTipoDeVajilla;
-
 
 
             if(txtModeloVajilla.getText().isEmpty()){
@@ -136,7 +151,7 @@ public class CrearNuevaVajillaController implements UsuarioAwareController {
     @FXML
     public void buttonVolver(ActionEvent event) throws IOException {
         // Cargar el archivo FXML
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/macdanyapp/template/TablaOpciones.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/macdanyapp/template/Stock.fxml"));
         Parent root = loader.load();
 
         // Obtener el controlador de la nueva escena
@@ -147,7 +162,7 @@ public class CrearNuevaVajillaController implements UsuarioAwareController {
         }
 
         // Cambiar de escena
-        Scene scene = new Scene(root, 600, 400);
+        Scene scene = new Scene(root, 1600, 900);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.centerOnScreen();

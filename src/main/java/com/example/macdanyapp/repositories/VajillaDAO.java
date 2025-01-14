@@ -128,14 +128,14 @@ public class VajillaDAO {
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Integer tipoDeVajilla=rs.getInt("tipo_de_vajilla");
+                    Integer tipoDeVajillaId = rs.getInt("id_tipo_de_vajilla");
                     vajilla = new Vajilla(
                             rs.getInt("idVajilla"),
                             rs.getString("modelo"),
                             rs.getString("color"),
                             rs.getString("tamaño"),
                             rs.getFloat("precioIndividual"),
-                            tipoDeVajillaService.traerTipoDeVajillaPorId(tipoDeVajilla)
+                            tipoDeVajillaService.traerTipoDeVajillaPorId(tipoDeVajillaId)
                     );
                     listaVajilla.add(vajilla);
                 }

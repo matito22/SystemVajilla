@@ -14,7 +14,8 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
 
-    <TextField fx:id="txtNombreTipoDeVajilla" promptText="Nombre tipo de vajilla"/>
+    <TextField fx:id="txtNombreTipoDeVajilla" promptText="Nuevo tipo de vajilla"/>
+
     <Label fx:id="lblTipoVajillaAceptado" text="Tipo de Vajilla agregado" textFill="green" visible="false" />
     <!-- Campo de texto para el nombre de usuario -->
     <TextField fx:id="txtModeloVajilla" promptText="Modelo" />

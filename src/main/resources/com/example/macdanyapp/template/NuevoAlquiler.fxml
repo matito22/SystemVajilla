@@ -44,7 +44,7 @@
     <Label fx:id="lblErrorStockInsuficiente" text="Stock Insuficiente" textFill="red" visible="false" />
     <TextField fx:id="txtPrecioUnitarioVajilla" promptText="Precio Unitario (Opcional)" />
     <TextField fx:id="searchFieldTipoDeVajilla" promptText="Buscar Tipo de Vajilla..."/>
-    <ListView fx:id="listViewTiposDeVajilla" prefHeight="200" prefWidth="300" visible="false"/>
+    <ListView fx:id="listViewTiposDeVajilla" prefHeight="200" prefWidth="300" visible="false" />
     <ListView fx:id="listViewDetalleActualizado" prefHeight="200" prefWidth="300" visible="false"/>
     <Label fx:id="lblErrorTipoDeVajilla" text="Vajilla inexistente" textFill="red" visible="false" />
 

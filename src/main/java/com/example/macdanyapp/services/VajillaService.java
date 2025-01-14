@@ -104,7 +104,7 @@ public class VajillaService {
 
 
         } catch (SQLException e) {
-            System.err.println("Error al traer los alquileres: " + e.getMessage());
+            System.err.println("Error al traer las vajillas: " + e.getMessage());
         }
         return vajillaLista;
     }

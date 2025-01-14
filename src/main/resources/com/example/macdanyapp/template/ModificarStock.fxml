@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox alignment="CENTER" spacing="10.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.macdanyapp.controllers.ModificarStockController">
+    <!-- Margen interno del VBox -->
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <TextField fx:id="searchFieldVajilla" promptText="Seleccionar tipo de vajilla"/>
+    <ListView fx:id="listViewVajilla" prefHeight="200" prefWidth="300"/>
+    <TextField fx:id="cantidadVajilla" promptText="Cantidad"/>
+
+    <Button fx:id="modificar" onAction="#buttonModificar" text="Modificar"/>
+    <Button text="Volver" fx:id="buttonVolver"  onAction="#buttonVolver" prefWidth="180"/>
+    <Label fx:id="lblError" text="" textFill="red" visible="false" />
+    <Label fx:id="lblCorrecto" text="" textFill="green" visible="false" />
+
+</VBox>

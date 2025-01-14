@@ -247,6 +247,9 @@ public class testGeneral
         //vajillaService.insertVajilla(vajilla);
 
 
+        //vajillaService.traerListaVajilla();
+        //tipoDeVajillaService.traerTipoDeVajillaPorId(1);
+
 
     }
 }
