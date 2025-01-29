@@ -119,6 +119,7 @@ public class AlquileresActivosController implements UsuarioAwareController  {
         try{
             alquilerService.modificarEstadoAlquiler(Estado.FINALIZADO,alquiler.getIdAlquiler());
             lblCorrecto.setVisible(true);
+            actualizarListaAlquileres();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

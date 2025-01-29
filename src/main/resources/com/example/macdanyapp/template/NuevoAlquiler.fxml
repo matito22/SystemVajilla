@@ -54,5 +54,7 @@
     <Button text="Volver" fx:id="buttonVolver"  onAction="#buttonVolver" prefWidth="180"/>
     <Label fx:id="lblVajillaAgregada" text="Vajilla agregada" textFill="green" visible="false" />
     <Label fx:id="lblErrorCamposVacios" text="Hay campos vacios" textFill="red" visible="false" />
+    <Label fx:id="lblAlquilerCreado" text="Alquiler creado" textFill="green" visible="false" />
+
 
 </VBox>

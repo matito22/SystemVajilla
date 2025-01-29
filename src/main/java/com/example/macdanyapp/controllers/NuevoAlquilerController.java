@@ -25,11 +25,15 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class NuevoAlquilerController implements UsuarioAwareController {
 
     @FXML
     public Button buttonVolver;
+    @FXML
+    public Label lblAlquilerCreado;
     @FXML
     private Usuario usuario;
     public void setUsuario(Usuario usuario) {
@@ -298,7 +302,7 @@ public class NuevoAlquilerController implements UsuarioAwareController {
                 fecha = txtFechaComienzoPicker.getValue();
                 fecha2= txtFechaFinalizacionPicker.getValue();
                if (fecha == null || fecha2 == null) {
-                   throw new NullPointerException("Las fechas no pueden ser nulas");
+                   lblErrorFecha.setVisible(true);
                }
                lblErrorFecha.setVisible(false);
 
@@ -347,6 +351,10 @@ public class NuevoAlquilerController implements UsuarioAwareController {
 
                 alquiler = new Alquiler(fecha, fecha2, horaComienzo, horaFinalizacion, cliente, diasDeAlquiler, costoDelivery, 0, estado, listaDetalleAlquiler, multa, "");
                 idGenerado=alquilerService.insertAlquiler(alquiler);
+                lblAlquilerCreado.setVisible(true);
+                PauseTransition pause = new PauseTransition(Duration.seconds(2));
+                pause.setOnFinished(event1 -> lblAlquilerCreado.setVisible(false));
+                pause.play();
                 if (idGenerado > 0) { // Solo si el ID generado es válido, habilitamos los campos
 
                     //YA SE CREO EL ALQUILER CORRECTAMENTE, SE HABILITAN LOS CAMPOS DEL DETALLE DEL ALQUILER
@@ -371,6 +379,7 @@ public class NuevoAlquilerController implements UsuarioAwareController {
                     listViewClientes.setDisable(true);
                     buttonCrearAlquiler.setDisable(true);
 
+
             } else {
 
                 lblErrorCamposVacios.setVisible(true);
@@ -392,6 +401,9 @@ public class NuevoAlquilerController implements UsuarioAwareController {
 
         if(cantidad > stockDisponible.getCantidadDisponible()){
             lblErrorStockInsuficiente.setVisible(true);
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(event -> lblErrorStockInsuficiente.setVisible(false));
+            pause.play();
             return 0;
         }else{
             Integer stockNuevo= stockDisponible.getCantidadDisponible()-cantidad;
@@ -438,27 +450,44 @@ public class NuevoAlquilerController implements UsuarioAwareController {
     @FXML
     public void buttonDetalleAlquilerFinalizado(ActionEvent event) throws IOException, SQLException {
 
-        totalAlquiler=totalAlquiler+alquilerService.traerAlquiler(idGenerado).getCostoDelivery();
+        totalAlquiler = totalAlquiler + alquilerService.traerAlquiler(idGenerado).getCostoDelivery();
 
+        try {
+            alquilerService.modificarAlquiler(totalAlquiler, idGenerado);
+            lblVajillaAgregada.setText("Detalle finalizado");
+            lblVajillaAgregada.setVisible(true);
 
-        try{
-            alquilerService.modificarAlquiler(totalAlquiler,idGenerado);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/macdanyapp/template/TablaOpciones.fxml"));
-            Parent root = loader.load();
+            // Crear una pausa de 2 segundos
+            PauseTransition pause = new PauseTransition(Duration.seconds(2));
+            pause.setOnFinished(event2 -> {
+                lblVajillaAgregada.setVisible(false);
 
-            // Obtener el controlador de la nueva escena
-            Object controller = loader.getController();
-            if (controller instanceof UsuarioAwareController) {
-                // Pasar el usuario al nuevo controlador
-                ((UsuarioAwareController) controller).setUsuario(usuario);
-            }
+                // Aquí volveremos a la ventana anterior
+                try {
+                    // Volver a la escena anterior
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/macdanyapp/template/TablaOpciones.fxml"));
+                    Parent root = loader.load();
 
-            // Cambiar de escena
-            Scene scene = new Scene(root, 600, 400);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-            stage.centerOnScreen();
-            stage.show();
+                    // Obtener el controlador de la nueva escena
+                    Object controller = loader.getController();
+                    if (controller instanceof UsuarioAwareController) {
+                        // Pasar el usuario al nuevo controlador
+                        ((UsuarioAwareController) controller).setUsuario(usuario);
+                    }
+
+                    // Cambiar de escena
+                    Scene scene = new Scene(root, 600, 400);
+                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    stage.setScene(scene);
+                    stage.centerOnScreen();
+                    stage.show();
+                } catch (IOException e) {
+                    throw new RuntimeException("Error al cargar la ventana de opciones.", e);
+                }
+            });
+
+            // Iniciar la pausa
+            pause.play();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
