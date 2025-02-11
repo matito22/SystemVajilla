@@ -1,5 +1,6 @@
 package com.example.macdanyapp.controllers;
 
+import com.example.macdanyapp.entitys.Alquiler;
 import com.example.macdanyapp.entitys.TipoDeUsuario;
 import com.example.macdanyapp.entitys.Usuario;
 import com.example.macdanyapp.entitys.UsuarioAwareController;
@@ -36,6 +37,8 @@ public class TablaOpcionesController implements UsuarioAwareController {
 
     @FXML
     private Label laberErrorAdministrador;
+
+
 
 
     public void setUsuario(Usuario usuario) {

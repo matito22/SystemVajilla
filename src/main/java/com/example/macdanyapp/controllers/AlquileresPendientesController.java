@@ -126,6 +126,7 @@ public class AlquileresPendientesController implements UsuarioAwareController {
         lblCorrecto.setVisible(false);
 
 
+
         //LISTA ALQUILERES PENDIENTES
         listaAlquileres = alquilerService.traerAlquilerPorEstado(Estado.PENDIENTE);
         ObservableList<Alquiler> alquileresObservableList = FXCollections.observableArrayList(listaAlquileres);
@@ -157,13 +158,13 @@ public class AlquileresPendientesController implements UsuarioAwareController {
 
         //LISTA ALQUILERES PENDIENTES DIA DE HOY
 
-        listaAlquileres2 = alquilerService.traerAlquilerYActivarlo(Estado.PENDIENTE, LocalDate.now());
+        /*listaAlquileres2 = alquilerService.traerAlquilerYActivarlo(Estado.PENDIENTE, LocalDate.now());
         ObservableList<Alquiler> alquileresObservableList2 = FXCollections.observableArrayList(listaAlquileres2);
         alquileresObservableList2.setAll(listaAlquileres2);
-        listViewAlquileresPendientesDiaDeHoy.setItems(alquileresObservableList2);
+        listViewAlquileresPendientesDiaDeHoy.setItems(alquileresObservableList2);*/
 
 
-        listViewAlquileresPendientesDiaDeHoy.setCellFactory(param -> new javafx.scene.control.ListCell<>() {
+        /*listViewAlquileresPendientesDiaDeHoy.setCellFactory(param -> new javafx.scene.control.ListCell<>() {
             protected void updateItem(Alquiler alquiler, boolean empty) {
                 super.updateItem(alquiler, empty);
                 if (empty || alquiler == null) {
@@ -181,7 +182,7 @@ public class AlquileresPendientesController implements UsuarioAwareController {
                 searchFieldAlquilerPendientesHoy.setText(selectedAlquiler.toString()); // Muestra el cliente seleccionado en el TextField
 
             }
-        });
+        });*/
 
     }
 
@@ -209,129 +210,54 @@ public class AlquileresPendientesController implements UsuarioAwareController {
     //MODIFICO EL ALQUILER DE PENDIENTE
     @FXML
     public void buttonActivarAlquiler(ActionEvent event) {
-        Alquiler alquiler=listViewAlquileresPendientesDiaDeHoy.getSelectionModel().getSelectedItem();
+
+        Alquiler alquiler=listViewAlquileresPendientes.getSelectionModel().getSelectedItem();
+
+        alquilerSeleccionado=listViewAlquileresPendientes.getSelectionModel().getSelectedItem();
+        if (alquilerSeleccionado==null){
+            lblError.setText("Seleccione alquiler para activar");
+            lblError.setVisible(true);
+            return;
+        }
 
         try{
             alquilerService.modificarEstadoAlquiler(Estado.ACTIVO,alquiler.getIdAlquiler());
             lblCorrecto.setVisible(true);
         } catch (SQLException e) {
            lblError.setText("Alquiler no seleccionado");
-           lblCorrecto.setVisible(true);
+           lblError.setVisible(true);
         }
     }
     @FXML
-    public void buttonModificarAlquiler(ActionEvent event) throws IOException, SQLException {
+    public Alquiler buttonModificarAlquiler(ActionEvent event) throws IOException, SQLException {
         Alquiler alquilerSeleccionado2=null;
         //NO FUNCIONA, REVISAR 10-01
         alquilerSeleccionado2=listViewAlquileresPendientes.getSelectionModel().getSelectedItem();
         if (alquilerSeleccionado2==null){
             lblError.setText("Seleccione alquiler");
             lblError.setVisible(true);
-            return;
+            return null;
         }
 
-        // Ocultar la vista principal
-        vistaAlquileresPendientes.setVisible(false);
-        vistaAlquileresPendientes.setManaged(false);
+        // Cargar el archivo FXML
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/macdanyapp/template/ModificarAlquiler.fxml"));
+        Parent root = loader.load();
 
-        // Mostrar la vista de modificación
-        vistaModificarAlquiler.setVisible(true);
-        vistaModificarAlquiler.setManaged(true);
+        // Obtener el controlador de la nueva escena
+        ModificarAlquilerController controller = loader.getController();
+        if (controller != null) {
+            // Pasar el alquiler al nuevo controlador
+            controller.setAlquiler(alquilerSeleccionado2);
+        }
 
+        // Cambiar de escena
+        Scene scene = new Scene(root, 600, 400);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.show();
 
-        clientes = clienteService.traerListaClientes();
-        listViewClientes.setVisible(false);
-
-        // Convierte la lista de clientes a ObservableList
-        ObservableList<Cliente> clientesObservableList = FXCollections.observableArrayList(clientes);
-        listViewClientes.setItems(clientesObservableList);
-
-        // Define cómo se mostrará cada Cliente en el ListView
-        listViewClientes.setCellFactory(param -> new javafx.scene.control.ListCell<>() {
-            protected void updateItem(Cliente cliente, boolean empty) {
-                super.updateItem(cliente, empty);
-                if (empty || cliente == null) {
-                    setText(null);
-                } else {
-                    setText(cliente.toString()); // Muestra el nombre y apellido
-                }
-            }
-        });
-
-        // Filtra los clientes basándose en la entrada del usuario
-        searchFieldClientes.addEventFilter(KeyEvent.KEY_RELEASED, event2 -> {
-            String filter = searchFieldClientes.getText().toLowerCase();
-            if (filter.isEmpty()) {
-                listViewClientes.setItems(FXCollections.observableArrayList());
-                listViewClientes.setVisible(false); // Oculta si no hay filtro
-            } else {
-                ObservableList<Cliente> filteredList = FXCollections.observableArrayList(
-                        clientes.stream()
-                                .filter(cliente -> cliente.toString().toLowerCase().contains(filter))
-                                .toList()
-                );
-                listViewClientes.setItems(filteredList);
-                listViewClientes.setVisible(!filteredList.isEmpty()); // Muestra solo si hay resultados
-            }
-        });
-
-        listViewClientes.setOnMouseClicked(event2 -> {
-            Cliente selectedCliente = listViewClientes.getSelectionModel().getSelectedItem();
-            if (selectedCliente != null) {
-                searchFieldClientes.setText(selectedCliente.toString()); // Muestra el cliente seleccionado en el TextField
-                listViewClientes.setVisible(false); // Oculta el ListView
-            }
-        });
-
-    //MANEJAMOS LOS ESTADOS
-        miComboBoxEstado.setConverter(new StringConverter<Estado>() {
-            @Override
-            public String toString(Estado estado) {
-                return estado != null ? estado.toString() : "";
-            }
-
-            @Override
-            public Estado fromString(String string) {
-                return Estado.valueOf(string);  // Convierte el String de nuevo a un Estado
-            }
-        });
-
-        // Rellenar txtEstado con valores del enum Estado
-        ObservableList<Estado> estados = FXCollections.observableArrayList(Estado.values());
-        miComboBoxEstado.setItems(estados);
-
-        // Agregar un mensaje al cambiar el estado
-        miComboBoxEstado.setOnAction(event1 -> {
-            Estado seleccionado = (Estado) miComboBoxEstado.getValue();
-            if (seleccionado != null) {
-                System.out.println("Estado seleccionado: " + seleccionado);
-            }
-        });
-
-
-
-        //DEJAMOS DE MOSTRAR LO DE ANTES Y MOSTRAMOS LO NUEVO
-        alquilerSeleccionado = listViewAlquileresPendientes.getSelectionModel().getSelectedItem();
-
-
-
-
-        //LLENAMOS LOS CAMPOS CON LOS VALORES DEL ALQUILER SELECCIONADO
-
-        txtFechaComienzoPicker.setValue(alquilerSeleccionado.getFechaComienzo());
-        txtFechaFinalizacionPicker.setValue(alquilerSeleccionado.getFechaFinalizacion());
-        String hora = alquilerSeleccionado.getHoraComienzoTime().toString();
-        txtHoraComienzo.setText(hora);
-        String hora2=alquilerSeleccionado.getHoraFinalizacionTime().toString();
-        txtHoraFinalizacion.setText(hora2);
-        txtDiasDeAlquiler.setText(alquilerSeleccionado.getDiasAlquiler().toString());
-        txtCostoDelivery.setText(alquilerSeleccionado.getCostoDelivery().toString());
-        Estado estado=alquilerSeleccionado.getEstado();
-        miComboBoxEstado.setValue(estado);
-        searchFieldClientes.setText(alquilerSeleccionado.getCliente().toString());
-
-
-
+        return alquilerSeleccionado2;
     }
 
     @FXML
